@@ -5,6 +5,8 @@
 particle::particle(){
 	setInitialCondition(0,0,0,0);
 	damping = 0.12f;
+    particleStance = 1;
+    angle =0; 
 }
 
 //------------------------------------------------------------
@@ -173,11 +175,34 @@ void particle::setInitialCondition(float px, float py, float vx, float vy){
 void particle::update(){	
 	vel = vel + frc;
 	pos = pos + vel;
+    
 }
 
 //------------------------------------------------------------
 void particle::draw(){
-    ofCircle(pos.x, pos.y, 3);
+    ofPushMatrix();
+    ofTranslate(pos.x, pos.y);
+    ofRotateZ(angle);
+    
+    
+    int size = 30;
+    
+    if (particleStance == 1) {
+        ofCircle(0, 0, size);
+    }
+    else if(particleStance ==2){
+        ofRect(-size, -size, size*2, size*2);
+    }
+    else if (particleStance == 3){
+        ofPushMatrix();
+        ofBeginShape();
+        ofVertex(0 , -size);
+        ofVertex(size/2, size/2);
+        ofVertex(-size/2, size/2);
+        ofEndShape();
+        ofPopMatrix();
+    }
+    ofPopMatrix();
 }
 
 
