@@ -6,14 +6,17 @@ void testApp::setup(){
 	ofxAccelerometer.setup();
 	ofSetVerticalSync(true);
 	ofSetFrameRate(60);
+    ofEnableSmoothing();
 	
+    ofSetCircleResolution(120);
 	//If you want a landscape oreintation 
 	//iPhoneSetOrientation(OFXIPHONE_ORIENTATION_LANDSCAPE_RIGHT);
 	
-    ofBackground(86, 217, 205);
     
     particles[0].setInitialCondition(384, 24, 0, 5);
     particles[1].setInitialCondition(384, 1000, 0, -5);
+    
+    particles[0].angle = 180;
     
     rect_up.set(0, 0, 768, 512);
     rect_down.set(0, 512, 768, 512);
@@ -29,15 +32,38 @@ void testApp::setup(){
     command_up = myString[int(ofRandom(0, 2))];
     command_down = myString[int(ofRandom(0, 2))];
     
-    condition = MAIN_MEUN;
+    condition = MAIN_MENU;
+    
+    font.loadFont("impact.ttf", 14);
+    fontBig.loadFont("impact.ttf", 72);
+    
+    blue.set(86, 217, 205);
+    
+    int spacing = ofGetHeight()/6;
+    for (int i =0; i<5; i++) {
+        menuDots[i].set(ofGetWidth()/2, (i+1)*spacing);
+    }
+    
+    bSplash = true;
+    bPause = false;
+    bWin = false;
+    
+    menuButton[0].set(0, ofGetHeight()/2);
+    menuButton[1].set(ofGetWidth(), ofGetHeight()/2);
+    menuButtonSize = 150;
+    
+    for (int i = 0 ; i<2; i++) {
+        pauseMenu[i].set(ofGetWidth()/2, (i+1)*ofGetHeight()/3);
+    }
+
+    
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
 
     switch (condition) {
-        case MAIN_MEUN:
-            
+        case MAIN_MENU:
             
         
             
@@ -45,24 +71,26 @@ void testApp::update(){
             
         case GAME_PLAY:{
             
-            for (int i =0; i<2; i++) {
-                particles[i].resetForce();
-            }
-            particles[0].addAttractionForce(particles[1], 1024, 0.08);
-            particles[1].addAttractionForce(particles[0], 1024, 0.08);
-    
-            for (int i =0; i<2; i++) {
-                particles[i].addDampingForce();
-                particles[i].update();
-            }
-            
-            float dis = particles[0].pos.distance(particles[1].pos);
-            cout<<dis<<endl;
-            if (dis < 10) {
-                cout<<"game over"<<endl;
+            if (!bPause && !bEndGame){
+                for (int i =0; i<2; i++) {
+                    particles[i].resetForce();
+                }
+                particles[0].addAttractionForce(particles[1], 1024, 0.08);
+                particles[1].addAttractionForce(particles[0], 1024, 0.08);
+        
+                for (int i =0; i<2; i++) {
+                    particles[i].addDampingForce();
+                    particles[i].update();
+                }
+                
+                float dis = particles[0].pos.distance(particles[1].pos);
+                cout<< dis <<endl;
+                if (dis < 10) {
+//                    cout<<"game over"<<endl;
+                    bEndGame = true;
+                }
             }
         }
-            
             break;
     }
         
@@ -72,36 +100,131 @@ void testApp::update(){
 void testApp::draw(){
     
     switch (condition) {
-        case MAIN_MEUN:
-            ofSetColor(255, 255, 255);
-            ofRect(button_1);
-            ofRect(button_2);
+        case MAIN_MENU:{
+            ofBackground(255);
+            ofSetColor(blue);
+            for (int i = 0 ; i<5; i++) {
+                ofCircle(menuDots[i], 50);
+            }
+            
+            ofSetColor(255);
+            string sOne = "Mode 1";
+            font.drawString(sOne,
+                            menuDots[0].x-(int)font.stringWidth(sOne)/2,
+                            menuDots[0].y+(int)font.stringHeight(sOne)/2);
+            
+            string sTwo = "Mode 2";
+            font.drawString(sTwo,
+                            menuDots[1].x-(int)font.stringWidth(sTwo)/2,
+                            menuDots[1].y+(int)font.stringHeight(sTwo)/2);
+            
+            string sThree = "Mode 3";
+            font.drawString(sThree,
+                            menuDots[2].x-(int)font.stringWidth(sThree)/2,
+                            menuDots[2].y+(int)font.stringHeight(sThree)/2);
+            
+            string sFour = "Tutorial";
+            font.drawString(sFour,
+                            menuDots[3].x-(int)font.stringWidth(sFour)/2,
+                            menuDots[3].y+(int)font.stringHeight(sFour)/2);
+            
+            string sFive = "Credits";
+            font.drawString(sFive,
+                            menuDots[4].x-(int)font.stringWidth(sFive)/2,
+                            menuDots[4].y+(int)font.stringHeight(sFive)/2);
+            
+            
+            if (bSplash) {
+                ofSetColor(blue);
+                ofRect(0, 0, ofGetWidth(), ofGetHeight());
+                
+                ofSetColor(255);
+                string sTitle = "Kingda Ka";
+                fontBig.drawString(sTitle,
+                                   menuDots[2].x-(int)fontBig.stringWidth(sTitle)/2,
+                                   menuDots[2].y+(int)fontBig.stringHeight(sTitle)/2);
+            }
+            
+        }
             break;
             
         case GAME_PLAY:{
+            
+            ofBackground(86, 217, 205);
             ofSetColor(247, 255, 236);
             if (command_up == "rock") {
-                ofCircle(particles[0].pos.x,particles[0].pos.y, 30);
+                particles[0].particleStance = 1;
+                particles[0].draw();
             }
             else if(command_up == "paper"){
-                ofSetRectMode(OF_RECTMODE_CENTER);
-                ofRect(particles[0].pos.x, particles[0].pos.y, 60, 60);
+                particles[0].particleStance = 2;
+                particles[0].draw();
             }
             else if(command_up == "scissors"){
-                ofTriangle(particles[0].pos.x-60, particles[0].pos.y, particles[0].pos.x+60, particles[0].pos.y, particles[0].pos.x, particles[0].pos.y+60);
+                
+                particles[0].particleStance = 3;
+                particles[0].draw();
             }
             
+            ofSetColor(100);
             if (command_down == "rock") {
-                ofCircle(particles[1].pos.x,particles[1].pos.y, 30);
+                
+                particles[1].particleStance = 1;
+                particles[1].draw();
             }
             else if(command_down == "paper"){
-                ofSetRectMode(OF_RECTMODE_CENTER);
-                ofRect(particles[1].pos.x, particles[1].pos.y, 60, 60);
+                particles[1].particleStance = 2;
+                particles[1].draw();
             }
             else if(command_down == "scissors"){
-                ofTriangle(particles[1].pos.x-60, particles[1].pos.y, particles[1].pos.x+60, particles[1].pos.y, particles[1].pos.x, particles[1].pos.y-60);
+                particles[1].particleStance = 3;
+                particles[1].draw();
             }
+            
+            //menu
+            ofPushStyle();
+            ofNoFill();
+            ofSetLineWidth(2);
+            ofSetColor(255,100);
+            ofCircle(menuButton[0], menuButtonSize);
+            ofCircle(menuButton[1], menuButtonSize);
+            ofLine(menuButton[0].x, menuButton[0].y, menuButtonSize, ofGetHeight()/2);
+            ofPopStyle();
+            
 
+            ofSetColor(255,200);
+            ofSetRectMode(OF_RECTMODE_CENTER);
+            ofRect( ofGetWidth()-70, ofGetHeight()/2-15, 80, 20);
+            ofRect( ofGetWidth()-70, ofGetHeight()/2+15, 80, 20);
+            ofSetRectMode(OF_RECTMODE_CORNER);
+            
+            if (bPause) {
+                ofSetColor(255,100);
+                ofRect(0, 0, ofGetWidth(), ofGetHeight());
+                ofSetColor(blue);
+                for (int i =0 ; i<2; i++) {
+                    ofCircle(pauseMenu[i], 50);
+                }
+                ofSetColor(255);
+                string sPause1 = "Resume";
+                font.drawString(sPause1,
+                                pauseMenu[0].x-(int)font.stringWidth(sPause1)/2,
+                                pauseMenu[0].y+(int)font.stringHeight(sPause1)/2);
+                
+                string sPause2 = "Main Menu";
+                font.drawString(sPause2,
+                                pauseMenu[1].x-(int)font.stringWidth(sPause2)/2,
+                                pauseMenu[1].y+(int)font.stringHeight(sPause2)/2);
+                
+                
+            }
+            
+            else if (bEndGame) {
+                ofSetColor(255,100);
+                ofRect(0, 0, ofGetWidth(), ofGetHeight());
+                
+            }
+            
         }
             
             break;
@@ -113,10 +236,28 @@ void testApp::draw(){
 //--------------------------------------------------------------
 void testApp::touchDown(ofTouchEventArgs & touch){
     
-    switch (condition) {
-        case MAIN_MEUN:
+    ofPoint touchPoint(touch.x, touch.y);
+    switch (condition)
+    {
+        case MAIN_MENU:
+        {
+            ofPoint touchPoint(touch.x, touch.y);
             
+            if (bSplash){
+                bSplash = false;
+            }
+            
+            else{
+                
+                if (menuDots[0].distance(touchPoint) < 50) {
+                    condition = GAME_PLAY;
+                    bPause = false;
+                }
+            }
+        }
+        
             break;
+            
             
         case GAME_PLAY:{
             
@@ -137,6 +278,19 @@ void testApp::touchDown(ofTouchEventArgs & touch){
                 temp.prePos.set(touch.x, touch.y);
                 mfinger_down.push_back(temp);
             }
+            
+            if (menuButton[1].distance(touchPoint)<menuButtonSize) {
+                bPause = true;
+            }
+            
+            if (bPause == true){
+                if (pauseMenu[0].distance(touchPoint)<50) {
+                    bPause = false;
+                }
+                else if (pauseMenu[1].distance(touchPoint)<50) {
+                    condition = MAIN_MENU;
+                }
+            }
         }
             
             break;
@@ -148,7 +302,7 @@ void testApp::touchDown(ofTouchEventArgs & touch){
 //--------------------------------------------------------------
 void testApp::touchMoved(ofTouchEventArgs & touch){
     switch (condition) {
-        case MAIN_MEUN:
+        case MAIN_MENU:
             
             break;
             
@@ -201,13 +355,8 @@ void testApp::touchMoved(ofTouchEventArgs & touch){
 void testApp::touchUp(ofTouchEventArgs & touch){
     
     switch (condition) {
-        case MAIN_MEUN:
+        case MAIN_MENU:
             
-            if (touch.numTouches == 0) {
-                if (button_1.inside(touch.x, touch.y)) {
-                    condition = GAME_PLAY;
-                }
-            }
             break;
             
         case GAME_PLAY:{

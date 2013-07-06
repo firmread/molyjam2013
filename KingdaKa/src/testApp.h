@@ -7,8 +7,8 @@
 #include "finger.h"
 
 enum game_condition {
-    MAIN_MEUN,
-    GAME_PLAY,
+    MAIN_MENU,
+    GAME_PLAY
 };
 
 class testApp : public ofxiPhoneApp{
@@ -32,10 +32,20 @@ class testApp : public ofxiPhoneApp{
         void gotFocus();
         void gotMemoryWarning();
         void deviceOrientationChanged(int newOrientation);
-
     
         game_condition condition;
     
+    
+    
+    //MENU
+    ofPoint menuDots[5];
+    ofColor blue;
+    
+    ofTrueTypeFont font, fontBig;
+    
+    bool bSplash;
+    
+        //GAMEPLAY
         particle particles[2];
         ofRectangle rect_up, rect_down;
         ofRectangle button_1, button_2;
@@ -46,7 +56,13 @@ class testApp : public ofxiPhoneApp{
         int touch_num_up,touch_num_down;
         string command_up,command_down;
     
+    ofPoint menuButton[2];
+    int menuButtonSize;
     
+    bool bPause;
+    ofPoint pauseMenu[2];
+    
+    bool bEndGame;
 
 };
 
