@@ -55,6 +55,12 @@ void testApp::update(){
                 particles[i].addDampingForce();
                 particles[i].update();
             }
+            
+            float dis = particles[0].pos.distance(particles[1].pos);
+            cout<<dis<<endl;
+            if (dis < 10) {
+                cout<<"game over"<<endl;
+            }
         }
             
             break;
