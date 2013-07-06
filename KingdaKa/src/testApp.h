@@ -25,8 +25,7 @@ class testApp : public ofxiPhoneApp{
         void touchDoubleTap(ofTouchEventArgs & touch);
         void touchCancelled(ofTouchEventArgs & touch);
     
-        void menuPage();
-        void gamePlay();
+        void reset();
     
         void lostFocus();
         void gotFocus();
@@ -48,7 +47,6 @@ class testApp : public ofxiPhoneApp{
         //GAMEPLAY
         particle particles[2];
         ofRectangle rect_up, rect_down;
-        ofRectangle button_1, button_2;
         vector<finger> mfinger_up;
         vector<finger> mfinger_down;
 

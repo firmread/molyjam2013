@@ -20,8 +20,6 @@ void testApp::setup(){
     
     rect_up.set(0, 0, 768, 512);
     rect_down.set(0, 512, 768, 512);
-    button_1.setFromCenter(384, 700, 300, 70);
-    button_2.setFromCenter(384, 800, 300, 70);
     touch_num_up = 0;
     
     string myString[3];
@@ -46,7 +44,7 @@ void testApp::setup(){
     
     bSplash = true;
     bPause = false;
-    bWin = false;
+    bEndGame = false;
     
     menuButton[0].set(0, ofGetHeight()/2);
     menuButton[1].set(ofGetWidth(), ofGetHeight()/2);
@@ -57,6 +55,16 @@ void testApp::setup(){
     }
 
     
+}
+
+void testApp::reset(){
+    
+    
+    particles[0].setInitialCondition(384, 24, 0, 5);
+    particles[1].setInitialCondition(384, 1000, 0, -5);
+    
+    bPause = false;
+    bEndGame = false;
 }
 
 //--------------------------------------------------------------
@@ -199,7 +207,7 @@ void testApp::draw(){
             ofSetRectMode(OF_RECTMODE_CORNER);
             
             if (bPause) {
-                ofSetColor(255,100);
+                ofSetColor(255,200);
                 ofRect(0, 0, ofGetWidth(), ofGetHeight());
                 ofSetColor(blue);
                 for (int i =0 ; i<2; i++) {
@@ -220,7 +228,7 @@ void testApp::draw(){
             }
             
             else if (bEndGame) {
-                ofSetColor(255,100);
+                ofSetColor(255,200);
                 ofRect(0, 0, ofGetWidth(), ofGetHeight());
                 
             }
@@ -250,8 +258,8 @@ void testApp::touchDown(ofTouchEventArgs & touch){
             else{
                 
                 if (menuDots[0].distance(touchPoint) < 50) {
+                    reset();
                     condition = GAME_PLAY;
-                    bPause = false;
                 }
             }
         }
