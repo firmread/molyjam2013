@@ -4,32 +4,34 @@
 #include "ofxiPhone.h"
 #include "ofxiPhoneExtras.h"
 
+#include "basePage.h"
+#include "menu.h"
+
 class testApp : public ofxiPhoneApp{
 	
-    public:
-        void setup();
-        void update();
-        void draw();
-        void exit();
-	
-        void touchDown(ofTouchEventArgs & touch);
-        void touchMoved(ofTouchEventArgs & touch);
-        void touchUp(ofTouchEventArgs & touch);
-        void touchDoubleTap(ofTouchEventArgs & touch);
-        void touchCancelled(ofTouchEventArgs & touch);
+public:
+    void setup();
+    void update();
+    void draw();
+    void exit();
 
-        void lostFocus();
-        void gotFocus();
-        void gotMemoryWarning();
-        void deviceOrientationChanged(int newOrientation);
+    void touchDown(ofTouchEventArgs & touch);
+    void touchMoved(ofTouchEventArgs & touch);
+    void touchUp(ofTouchEventArgs & touch);
+    void touchDoubleTap(ofTouchEventArgs & touch);
+    void touchCancelled(ofTouchEventArgs & touch);
 
-    ofPoint menuDots[5];
-    bool bMenu[5];
-    ofColor blue;
+    void lostFocus();
+    void gotFocus();
+    void gotMemoryWarning();
+    void deviceOrientationChanged(int newOrientation);
+    
     
     ofTrueTypeFont font, fontBig;
     
-    bool splash;
+    vector <basePage*> pages;
+    
+    int whichPage;
 };
 
 
