@@ -10,5 +10,6 @@ Firm Read Tothong
 Clovis Akira
   
 the inspiration quote we take is  
-http://www.molyjam.com/inspirations/19
+http://www.molyjam.com/inspirations/19  
+
 " The touch, the grab, the stroke, all of those things we're going to be obsessed about." - Peter Molyneux
