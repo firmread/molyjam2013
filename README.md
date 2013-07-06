@@ -4,10 +4,10 @@ molyjam2013
 simple iPad game for MolyJam2013  
 http://www.molyjam.com/news  
   
-by 
-Paul Cheng
-Firm Read Tothong
-Clovis Akira
+by   
+Paul Cheng  
+Firm Read Tothong  
+Clovis Akira  
   
 the inspiration quote we take is  
 http://www.molyjam.com/inspirations/19  
