@@ -33,6 +33,7 @@ class testApp : public ofxiPhoneApp{
 
         int touch_num_up,touch_num_down;
         ofPolyline area;
+        string command_up;
 
 };
 
