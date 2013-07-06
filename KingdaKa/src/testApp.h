@@ -3,8 +3,10 @@
 #include "ofMain.h"
 #include "ofxiPhone.h"
 #include "ofxiPhoneExtras.h"
-#include "particle.h"
-#include "finger.h"
+
+#include "basePage.h"
+#include "menu.h"
+#include "gameplay1.h"
 
 class testApp : public ofxiPhoneApp{
 	
@@ -25,14 +27,17 @@ class testApp : public ofxiPhoneApp{
         void gotMemoryWarning();
         void deviceOrientationChanged(int newOrientation);
 
-        particle particles[2];
-        ofRectangle rect_up, rect_down;
-
-        vector<finger> fingers;
-
-
-        int touch_num_up,touch_num_down;
-        ofPolyline area;
+    
+        void changePage (int newPage);
+        
+        basePage * prevPage;
+        float pageChangeTime;
+        bool bInPageChange;
+        
+        vector < basePage * > pages;
+    
+        int whichPage = 0;
+        int prevWhichPage = 0;
 
 };
 

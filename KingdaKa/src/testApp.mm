@@ -9,48 +9,89 @@ void testApp::setup(){
 	
 	//If you want a landscape oreintation 
 	//iPhoneSetOrientation(OFXIPHONE_ORIENTATION_LANDSCAPE_RIGHT);
+    
+    pages.push_back(new menu);          //0
+    pages.push_back(new gameplay1);     //1
+    
+    
+    for (int i = 0; i < pages.size(); i++){
+        pages[i]->setup();
+        pages[i]->allocateFbo();
+    }
 	
-    ofBackground(86, 217, 205);
-    
-    particles[0].setInitialCondition(384, 24, 0, 5);
-    particles[1].setInitialCondition(384, 1000, 0, -5);
-    
-    rect_up.set(0, 0, 768, 512);
-    rect_down.set(0, 512, 768, 512);
-    
-    touch_num_up = 0;
 }
 
 //--------------------------------------------------------------
+void testApp::changePage (int newPage){
+    
+    whichPage = newPage;
+    
+    if (prevWhichPage != whichPage){
+        
+        prevPage = pages[prevWhichPage];
+        pageChangeTime = ofGetElapsedTimef();
+        bInPageChange = true;
+        
+        pages[whichPage]->reset();
+    }
+    
+    prevWhichPage = whichPage;
+}
+//--------------------------------------------------------------
 void testApp::update(){
-
-    for (int i =0; i<2; i++) {
-        particles[i].resetForce();
-    }
     
-   
-    particles[0].addAttractionForce(particles[1], 1024, 0.05);
-    particles[1].addAttractionForce(particles[0], 1024, 0.05);
-
+    pages[whichPage]->update();
     
-    for (int i =0; i<2; i++) {
-        particles[i].addDampingForce();
-        particles[i].update();
-    }
+    prevWhichPage = whichPage;
     
-    
-   
-    
-    cout<<"touch_num_up:  "<<touch_num_up<<"  fingers Number:  "<<fingers.size()<<endl;
 }
 
 //--------------------------------------------------------------
 void testApp::draw(){
     
     
-    ofSetColor(247, 255, 236);
-    ofCircle(particles[0].pos.x,particles[0].pos.y, 10);
-    ofCircle(particles[1].pos.x,particles[1].pos.y, 10);
+    if (bInPageChange == true){
+        
+        float elapsedTime = ofGetElapsedTimef() - pageChangeTime;
+        if (elapsedTime > 0.5){
+            bInPageChange = false;
+        }
+        
+        float pct = elapsedTime / 0.5;
+        if (pct  > 1) pct = 1;
+        
+        pct = powf(pct, 0.8);
+        
+        
+        pages[whichPage]->drawFboStart();
+        pages[whichPage]->draw();
+        pages[whichPage]->drawFboEnd();
+        
+            
+        ofSetColor(255,255,255,255 * (pct));
+//        ofSetColor(255,255,255,255);
+        pages[whichPage]->drawFboDraw();
+        
+        
+        prevPage->drawFboStart();
+        prevPage->draw();
+        prevPage->drawFboEnd();
+        ofSetColor(255,255,255,255 * (1-pct));
+        prevPage->drawFboDraw();
+        
+        
+    } else {
+        
+        
+        pages[whichPage]->drawFboStart();
+        pages[whichPage]->draw();
+        pages[whichPage]->drawFboEnd();
+        ofSetColor(255,255,255,255);
+        pages[whichPage]->drawFboDraw();
+        
+    }
+    
+
     
 }
 
@@ -59,47 +100,18 @@ void testApp::draw(){
 //--------------------------------------------------------------
 void testApp::touchDown(ofTouchEventArgs & touch){
     
-    
-    if (rect_up.inside(touch.x, touch.y)) {
-        finger temp;
-        temp.ID = touch.id;
-        temp.district = 0;
-        temp.pos.set(touch.x, touch.y);
-        temp.prePos.set(touch.x, touch.y);
-        fingers.push_back(temp);
-        
-        touch_num_up ++;
-    }
-    
-    
+
 }
 
 //--------------------------------------------------------------
 void testApp::touchMoved(ofTouchEventArgs & touch){
     
     
-        for (int i =0; i<fingers.size(); i++) {
-            if (touch_num_up) {
-                
-            }
-        }
-            
-    
 }
 
 //--------------------------------------------------------------
 void testApp::touchUp(ofTouchEventArgs & touch){
 
-    
-    for (int i =0; i<fingers.size(); i++) {
-        
-        if (fingers[i].district == 0 && touch.id == fingers[i].ID) {
-            
-                fingers.erase(fingers.begin()+i);
-                touch_num_up --;
-        }
-    
-    }
 
     
     
