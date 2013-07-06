@@ -30,7 +30,9 @@ class particle
 	
 	
 		float damping;
-
+    int particleStance;
+    float angle;
+    
     protected:
     private:
 };
