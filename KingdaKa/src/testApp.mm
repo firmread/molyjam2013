@@ -41,7 +41,7 @@ void testApp::update(){
     
    
     
-    cout<<"touch_num_up:  "<<touch_num_up<<"  fingers Number:  "<<fingers.size()<<endl;
+//cout<<"touch_num_up:  "<<touch_num_up<<"  fingers Number:  "<<mfinger_up.size()<<endl;
 }
 
 //--------------------------------------------------------------
@@ -66,9 +66,8 @@ void testApp::touchDown(ofTouchEventArgs & touch){
         temp.district = 0;
         temp.pos.set(touch.x, touch.y);
         temp.prePos.set(touch.x, touch.y);
-        fingers.push_back(temp);
-        
-        touch_num_up ++;
+        mfinger_up.push_back(temp);
+    
     }
     
     
@@ -77,13 +76,26 @@ void testApp::touchDown(ofTouchEventArgs & touch){
 //--------------------------------------------------------------
 void testApp::touchMoved(ofTouchEventArgs & touch){
     
-    
-        for (int i =0; i<fingers.size(); i++) {
-            if (touch_num_up) {
-                
-            }
+    for (int i =0; i<mfinger_up.size(); i++){
+        if (touch.id == mfinger_up[i].ID) {
+            mfinger_up[i].pos.set(touch.x, touch.y);
         }
-            
+    }
+   
+    if (mfinger_up.size()>1) {
+            float dis =  mfinger_up.back().pos.distance(mfinger_up[mfinger_up.size()-2].pos);
+            float preDis =  mfinger_up.back().prePos.distance(mfinger_up[mfinger_up.size()-2].prePos);
+            float diff = preDis - dis;
+            if (diff > 10) {
+                 cout<<"rock_up"<<endl;
+            }
+    }
+  
+    for (int i =0; i<mfinger_up.size(); i++){
+        if (touch.id == mfinger_up[i].ID) {
+            mfinger_up[i].prePos.set(touch.x, touch.y);
+        }
+    }
     
 }
 
@@ -91,14 +103,10 @@ void testApp::touchMoved(ofTouchEventArgs & touch){
 void testApp::touchUp(ofTouchEventArgs & touch){
 
     
-    for (int i =0; i<fingers.size(); i++) {
-        
-        if (fingers[i].district == 0 && touch.id == fingers[i].ID) {
-            
-                fingers.erase(fingers.begin()+i);
-                touch_num_up --;
+    for (int i =0; i<mfinger_up.size(); i++) {
+        if (mfinger_up[i].district == 0 && touch.id == mfinger_up[i].ID) {
+                mfinger_up.erase(mfinger_up.begin()+i);
         }
-    
     }
 
     

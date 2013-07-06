@@ -28,7 +28,7 @@ class testApp : public ofxiPhoneApp{
         particle particles[2];
         ofRectangle rect_up, rect_down;
 
-        vector<finger> fingers;
+        vector<finger> mfinger_up;
 
 
         int touch_num_up,touch_num_down;
