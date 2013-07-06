@@ -49,7 +49,7 @@ class testApp : public ofxiPhoneApp{
         ofRectangle rect_up, rect_down;
         vector<finger> mfinger_up;
         vector<finger> mfinger_down;
-
+    float particleSpeed;
 
         int touch_num_up,touch_num_down;
         string command_up,command_down;
@@ -61,6 +61,9 @@ class testApp : public ofxiPhoneApp{
     ofPoint pauseMenu[2];
     
     bool bEndGame;
+    
+    
+    
 
 };
 

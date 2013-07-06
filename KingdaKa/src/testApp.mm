@@ -53,6 +53,8 @@ void testApp::setup(){
     for (int i = 0 ; i<2; i++) {
         pauseMenu[i].set(ofGetWidth()/2, (i+1)*ofGetHeight()/3);
     }
+    
+    particleSpeed = ofRandom(0.08, 0.8);
 
     
 }
@@ -65,6 +67,8 @@ void testApp::reset(){
     
     bPause = false;
     bEndGame = false;
+    
+    particleSpeed = ofRandom(0.08,0.8);
 }
 
 //--------------------------------------------------------------
@@ -83,8 +87,8 @@ void testApp::update(){
                 for (int i =0; i<2; i++) {
                     particles[i].resetForce();
                 }
-                particles[0].addAttractionForce(particles[1], 1024, 0.08);
-                particles[1].addAttractionForce(particles[0], 1024, 0.08);
+                particles[0].addAttractionForce(particles[1], 1024, particleSpeed);
+                particles[1].addAttractionForce(particles[0], 1024, particleSpeed);
         
                 for (int i =0; i<2; i++) {
                     particles[i].addDampingForce();
@@ -269,22 +273,26 @@ void testApp::touchDown(ofTouchEventArgs & touch){
             
         case GAME_PLAY:{
             
-            if (rect_up.inside(touch.x, touch.y)) {
-                finger temp;
-                temp.ID = touch.id;
-                temp.district = 0;
-                temp.pos.set(touch.x, touch.y);
-                temp.prePos.set(touch.x, touch.y);
-                mfinger_up.push_back(temp);
-            }
-            
-            if (rect_down.inside(touch.x, touch.y)) {
-                finger temp;
-                temp.ID = touch.id;
-                temp.district = 0;
-                temp.pos.set(touch.x, touch.y);
-                temp.prePos.set(touch.x, touch.y);
-                mfinger_down.push_back(temp);
+            if (!bPause && !bEndGame) {
+                if (rect_up.inside(touch.x, touch.y)) {
+                    finger temp;
+                    temp.ID = touch.id;
+                    temp.district = 0;
+                    temp.pos.set(touch.x, touch.y);
+                    temp.prePos.set(touch.x, touch.y);
+                    mfinger_up.push_back(temp);
+                }
+                
+                if (rect_down.inside(touch.x, touch.y)) {
+                    finger temp;
+                    temp.ID = touch.id;
+                    temp.district = 0;
+                    temp.pos.set(touch.x, touch.y);
+                    temp.prePos.set(touch.x, touch.y);
+                    mfinger_down.push_back(temp);
+                }
+                
+
             }
             
             if (menuButton[1].distance(touchPoint)<menuButtonSize) {
