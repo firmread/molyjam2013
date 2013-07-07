@@ -11,6 +11,7 @@
 
 #include "ofMain.h"
 #include "particle.h"
+#include "finger.h"
 
 enum tutorial_condition {
     STEP_0,
@@ -23,9 +24,9 @@ public:
     void setup();
     void update();
     void draw();
-    void touchDown(int x, int y, int touchNum);
-    void touchUp(int x, int y, int touchNum);
-    void touchMove(int x, int y, int touchNum);
+    void touchDown(int x, int y, int ID);
+    void touchUp(int x, int y, int ID);
+    void touchMove(int x, int y, int ID);
 
     tutorial_condition condition;
     particle particles[2];
@@ -35,7 +36,14 @@ public:
     float startTime;
     int num;
     ofImage layout;
-    ofImage *;
+    ofImage *myLayout;
+    ofRectangle rect[2];
+    int width[3];
+    ofColor color[2];
+    bool bColor[2];
+    
+    finger mfinger[2];
+   
 };
 
 #endif /* defined(__KingdaKa__tutorial__) */

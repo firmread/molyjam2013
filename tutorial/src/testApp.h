@@ -66,7 +66,6 @@ class testApp : public ofxiPhoneApp{
     
     bool bEndGame;
     
-    
     tutorial mTurorial;
 
 };

@@ -321,7 +321,7 @@ void testApp::touchDown(ofTouchEventArgs & touch){
             
         case TUTORIAL:{
             
-            mTurorial.touchDown(touch.x, touch.y, touch.numTouches);
+            mTurorial.touchDown(touch.x, touch.y, touch.id);
             
         }break;
     }
@@ -377,7 +377,7 @@ void testApp::touchMoved(ofTouchEventArgs & touch){
             
         case TUTORIAL:{
  
-            mTurorial.touchMove(touch.x, touch.y, touch.numTouches);
+            mTurorial.touchMove(touch.x, touch.y, touch.id);
             
             
         }break;
@@ -445,7 +445,7 @@ void testApp::touchUp(ofTouchEventArgs & touch){
             
         case TUTORIAL:{
         
-            mTurorial.touchUp(touch.x, touch.y, touch.numTouches);
+            mTurorial.touchUp(touch.x, touch.y, touch.id);
             
         }break;
             
