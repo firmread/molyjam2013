@@ -37,9 +37,8 @@ void testApp::setup(){
     
     blue.set(86, 217, 205);
     
-    int spacing = ofGetHeight()/6;
-    for (int i =0; i<5; i++) {
-        menuDots[i].set(ofGetWidth()/2, (i+1)*spacing);
+    for (int i =0; i<MAIN_MENU_ITEMS; i++) {
+        menuDots[i].set(ofGetWidth()/2, (i+1)*ofGetHeight()/(MAIN_MENU_ITEMS+1));
     }
     
     bSplash = true;
@@ -50,14 +49,20 @@ void testApp::setup(){
     menuButton[1].set(ofGetWidth(), ofGetHeight()/2);
     menuButtonSize = 150;
     
-    for (int i = 0 ; i<2; i++) {
-        pauseMenu[i].set(ofGetWidth()/2, (i+1)*ofGetHeight()/3);
+    for (int i = 0 ; i<PAUSE_MENU_ITEMS; i++) {
+        pauseMenu[i].set(ofGetWidth()/2, (i+1)*ofGetHeight()/(PAUSE_MENU_ITEMS+1));
+    }
+    
+    for (int i = 0 ; i<END_MENU_ITEMS; i++) {
+        endGameMenu[i].set(ofGetWidth()/2, (i+1)*ofGetHeight()/(END_MENU_ITEMS+1));
     }
     
     particleSpeed = ofRandom(0.08, 0.8);
 
     
 }
+
+//--------------------------------------------------------------
 
 void testApp::reset(){
     
@@ -71,17 +76,23 @@ void testApp::reset(){
     particleSpeed = ofRandom(0.08,0.8);
 }
 
+
+void testApp::resetScore(){
+    
+}
+
 //--------------------------------------------------------------
 void testApp::update(){
 
     switch (condition) {
+        //------------------
         case MAIN_MENU:
-            
         
             
-            break;
-            
-        case GAME_PLAY:{
+        break;
+        //------------------
+        case GAME_PLAY:
+        {
             
             if (!bPause && !bEndGame){
                 for (int i =0; i<2; i++) {
@@ -96,14 +107,26 @@ void testApp::update(){
                 }
                 
                 float dis = particles[0].pos.distance(particles[1].pos);
-                cout<< dis <<endl;
+//                cout<< dis <<endl;
                 if (dis < 10) {
-//                    cout<<"game over"<<endl;
                     bEndGame = true;
+                    endCountDownStart = ofGetSeconds();
+                    endCountDown = 3;
                 }
             }
+            if (bEndGame) {
+                if (endCountDownStart != ofGetSeconds()) {
+                    endCountDown--;
+                    endCountDownStart = ofGetSeconds();
+                }
+                if (endCountDown<0) {
+                    reset();
+                }
+
+            }
         }
-            break;
+        break;
+        //------------------
     }
         
 }
@@ -112,10 +135,12 @@ void testApp::update(){
 void testApp::draw(){
     
     switch (condition) {
-        case MAIN_MENU:{
+        //------------------
+        case MAIN_MENU:
+        {
             ofBackground(255);
             ofSetColor(blue);
-            for (int i = 0 ; i<5; i++) {
+            for (int i = 0 ; i<MAIN_MENU_ITEMS; i++) {
                 ofCircle(menuDots[i], 50);
             }
             
@@ -151,16 +176,23 @@ void testApp::draw(){
                 ofRect(0, 0, ofGetWidth(), ofGetHeight());
                 
                 ofSetColor(255);
-                string sTitle = "Kingda Ka";
+                string sTitle = "Kingda\nKa";
                 fontBig.drawString(sTitle,
-                                   menuDots[2].x-(int)fontBig.stringWidth(sTitle)/2,
-                                   menuDots[2].y+(int)fontBig.stringHeight(sTitle)/2);
+                                   245,
+                                   menuDots[1].y+(int)fontBig.stringHeight(sTitle)/2);
+                
+                
+                string sTagline = "\" \nThe touch,\nthe grab,\nthe stroke,\nall of those things\nwe\'re going to be obsessed about.\n\"";
+                font.drawString(sTagline,
+                                   245,
+                                   menuDots[2].y+(int)font.stringHeight(sTagline)/2);
             }
             
         }
-            break;
-            
-        case GAME_PLAY:{
+        break;
+        //------------------
+        case GAME_PLAY:
+        {
             
             ofBackground(86, 217, 205);
             ofSetColor(247, 255, 236);
@@ -214,7 +246,7 @@ void testApp::draw(){
                 ofSetColor(255,200);
                 ofRect(0, 0, ofGetWidth(), ofGetHeight());
                 ofSetColor(blue);
-                for (int i =0 ; i<2; i++) {
+                for (int i =0 ; i<PAUSE_MENU_ITEMS; i++) {
                     ofCircle(pauseMenu[i], 50);
                 }
                 ofSetColor(255);
@@ -227,19 +259,37 @@ void testApp::draw(){
                 font.drawString(sPause2,
                                 pauseMenu[1].x-(int)font.stringWidth(sPause2)/2,
                                 pauseMenu[1].y+(int)font.stringHeight(sPause2)/2);
-                
-                
             }
             
             else if (bEndGame) {
                 ofSetColor(255,200);
                 ofRect(0, 0, ofGetWidth(), ofGetHeight());
+                ofSetColor(blue);
+                for (int i =0; i<END_MENU_ITEMS; i++) {
+                    ofCircle(endGameMenu[i], 50);
+                }
+                
+                ofSetColor(255);
+                
+                string sCountDown = ofToString(endCountDown);
+                fontBig.drawString(sCountDown,
+                                   endGameMenu[0].x-(int)fontBig.stringWidth(sCountDown)/2-3,
+                                   endGameMenu[0].y+(int)fontBig.stringHeight(sCountDown)/2);
+
+                string sEnd1 = "Continue";
+                font.drawString(sEnd1,
+                                endGameMenu[1].x-(int)font.stringWidth(sEnd1)/2,
+                                endGameMenu[1].y+(int)font.stringHeight(sEnd1)/2);
+                
+                string sEnd2 = "Main Menu";
+                font.drawString(sEnd2,
+                                endGameMenu[2].x-(int)font.stringWidth(sEnd2)/2,
+                                endGameMenu[2].y+(int)font.stringHeight(sEnd2)/2);
                 
             }
-            
         }
-            
-            break;
+        break;
+        //------------------
     }
     
         
@@ -251,6 +301,8 @@ void testApp::touchDown(ofTouchEventArgs & touch){
     ofPoint touchPoint(touch.x, touch.y);
     switch (condition)
     {
+            
+        //------------------
         case MAIN_MENU:
         {
             ofPoint touchPoint(touch.x, touch.y);
@@ -267,12 +319,10 @@ void testApp::touchDown(ofTouchEventArgs & touch){
                 }
             }
         }
-        
-            break;
-            
-            
-        case GAME_PLAY:{
-            
+        break;
+        //------------------
+        case GAME_PLAY:
+        {
             if (!bPause && !bEndGame) {
                 if (rect_up.inside(touch.x, touch.y)) {
                     finger temp;
@@ -305,24 +355,36 @@ void testApp::touchDown(ofTouchEventArgs & touch){
                 }
                 else if (pauseMenu[1].distance(touchPoint)<50) {
                     condition = MAIN_MENU;
+                    resetScore();
+                }
+            }
+            
+            if (bEndGame == true) {
+                if (endGameMenu[1].distance(touchPoint) < 50) {
+                    reset();
+                }
+                if (endGameMenu[2].distance(touchPoint) < 50) {
+                    condition = MAIN_MENU;
+                    resetScore();
                 }
             }
         }
-            
-            break;
+        break;
+        //------------------
     }
-   
-    
 }
 
 //--------------------------------------------------------------
 void testApp::touchMoved(ofTouchEventArgs & touch){
     switch (condition) {
+            
+        //------------------
         case MAIN_MENU:
             
-            break;
-            
-        case GAME_PLAY:{
+        break;
+        //------------------
+        case GAME_PLAY:
+        {
             if (mfinger_up.size()>1){
                 for (int i =0; i<mfinger_up.size(); i++){
                     if (touch.id == mfinger_up[i].ID) {
@@ -358,8 +420,8 @@ void testApp::touchMoved(ofTouchEventArgs & touch){
                 }
             }
         }
-            
-            break;
+        break;
+        //------------------
     }
        
     
@@ -371,10 +433,12 @@ void testApp::touchMoved(ofTouchEventArgs & touch){
 void testApp::touchUp(ofTouchEventArgs & touch){
     
     switch (condition) {
+            
+        //------------------
         case MAIN_MENU:
             
-            break;
-            
+        break;
+        //------------------
         case GAME_PLAY:{
             
             if (mfinger_up.size()>1) {
@@ -420,7 +484,8 @@ void testApp::touchUp(ofTouchEventArgs & touch){
             }
         }
             
-            break;
+        break;
+        //------------------
     }
     
     
