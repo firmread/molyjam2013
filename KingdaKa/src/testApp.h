@@ -13,7 +13,8 @@
 
 enum game_condition {
     MAIN_MENU,
-    GAME_PLAY
+    GAME_PLAY,
+    CREDITS
 };
 
 class testApp : public ofxiPhoneApp{
@@ -32,6 +33,7 @@ public:
 
     void reset();
     void resetScore();
+    void checkWhoIsWinning();
 
     void lostFocus();
     void gotFocus();
@@ -44,7 +46,7 @@ public:
     
     //MAIN_MENU
     ofPoint menuDots[MAIN_MENU_ITEMS];
-    ofColor blue;
+    ofColor blue, red, yellow;
     
     ofTrueTypeFont font, fontBig;
     
@@ -70,6 +72,12 @@ public:
     ofPoint endGameMenu[END_MENU_ITEMS];
     
     int endCountDown, endCountDownStart;
+    bool bDidYouEvenPlayingMan;
+    bool bRedWin, bYellowWin, bDrawGame;
+    
+    int rScore, yScore;
+    
+    float dis;
 
 };
 

@@ -12,7 +12,7 @@ class particle
 			
         particle();
 		virtual ~particle(){};
-
+        void setupImage(int playerNumber);
         void resetForce();
 		void addForce(float x, float y);
 		void addRepulsionForce(float x, float y, float radius, float scale);
@@ -32,6 +32,11 @@ class particle
 		float damping;
     int particleStance;
     float angle;
+    
+    int playerNo;
+    bool bCartoonMode;
+    ofImage player[3];
+    float size;
     
     protected:
     private:

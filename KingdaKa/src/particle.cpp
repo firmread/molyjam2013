@@ -6,8 +6,29 @@ particle::particle(){
 	setInitialCondition(0,0,0,0);
 	damping = 0.12f;
     particleStance = 1;
-    angle =0; 
+    angle = 0;
+    
+    size = 150;
+    bCartoonMode = true;
+    
 }
+//------------------------------------------------------------
+
+void particle::setupImage(int playerNumber){
+    if (playerNumber == 0)
+    {
+        player[0].loadImage("assets/rHamm.png");
+        player[1].loadImage("assets/rPaper.png");
+        player[2].loadImage("assets/rSciss.png");
+    }
+    if (playerNumber == 1) 
+    {
+    player[0].loadImage("assets/yHamm.png");
+    player[1].loadImage("assets/yPaper.png");
+    player[2].loadImage("assets/ySciss.png");
+    }
+}
+
 
 //------------------------------------------------------------
 void particle::resetForce(){
@@ -185,22 +206,38 @@ void particle::draw(){
     ofRotateZ(angle);
     
     
-    int size = 30;
     
-    if (particleStance == 1) {
-        ofCircle(0, 0, size);
+    
+    if (!bCartoonMode) {
+        size  = 30;
+        if (particleStance == 1) {
+            ofCircle(0, 0, size);
+        }
+        else if(particleStance ==2){
+            ofRect(-size, -size, size*2, size*2);
+        }
+        else if (particleStance == 3){
+            ofPushMatrix();
+            ofBeginShape();
+            ofVertex(0 , -size);
+            ofVertex(size/2, size/2);
+            ofVertex(-size/2, size/2);
+            ofEndShape();
+            ofPopMatrix();
+        }
     }
-    else if(particleStance ==2){
-        ofRect(-size, -size, size*2, size*2);
-    }
-    else if (particleStance == 3){
-        ofPushMatrix();
-        ofBeginShape();
-        ofVertex(0 , -size);
-        ofVertex(size/2, size/2);
-        ofVertex(-size/2, size/2);
-        ofEndShape();
-        ofPopMatrix();
+    
+    else{
+    
+        if (particleStance == 1) {
+            player[0].draw(-size/2,-size/2, size, size);
+        }
+        else if(particleStance ==2){
+            player[1].draw(-size/2,-size/2, size, size);
+        }
+        else if (particleStance == 3){
+            player[2].draw(-size/2,-size/2, size, size);
+        }
     }
     ofPopMatrix();
 }

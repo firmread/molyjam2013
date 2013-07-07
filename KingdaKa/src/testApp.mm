@@ -7,16 +7,19 @@ void testApp::setup(){
 	ofSetVerticalSync(true);
 	ofSetFrameRate(60);
     ofEnableSmoothing();
+    ofEnableAlphaBlending();
 	
     ofSetCircleResolution(120);
 	//If you want a landscape oreintation 
 	//iPhoneSetOrientation(OFXIPHONE_ORIENTATION_LANDSCAPE_RIGHT);
 	
     
-    particles[0].setInitialCondition(384, 24, 0, 5);
-    particles[1].setInitialCondition(384, 1000, 0, -5);
+    reset();
     
+    bSplash = true;
     particles[0].angle = 180;
+    particles[0].playerNo = 0;
+    particles[1].playerNo = 1;
     
     rect_up.set(0, 0, 768, 512);
     rect_down.set(0, 512, 768, 512);
@@ -36,14 +39,13 @@ void testApp::setup(){
     fontBig.loadFont("impact.ttf", 72);
     
     blue.set(86, 217, 205);
+    red.set(255, 0, 0);
+    yellow.set(251, 175, 24);
     
     for (int i =0; i<MAIN_MENU_ITEMS; i++) {
         menuDots[i].set(ofGetWidth()/2, (i+1)*ofGetHeight()/(MAIN_MENU_ITEMS+1));
     }
     
-    bSplash = true;
-    bPause = false;
-    bEndGame = false;
     
     menuButton[0].set(0, ofGetHeight()/2);
     menuButton[1].set(ofGetWidth(), ofGetHeight()/2);
@@ -57,7 +59,10 @@ void testApp::setup(){
         endGameMenu[i].set(ofGetWidth()/2, (i+1)*ofGetHeight()/(END_MENU_ITEMS+1));
     }
     
-    particleSpeed = ofRandom(0.08, 0.8);
+    particles[0].setupImage(0);
+    particles[1].setupImage(1);
+    
+    rScore = yScore = 0;
 
     
 }
@@ -70,14 +75,45 @@ void testApp::reset(){
     particles[0].setInitialCondition(384, 24, 0, 5);
     particles[1].setInitialCondition(384, 1000, 0, -5);
     
+//    particles[0].setInitialCondition(0, -500, 0, 5);
+//    particles[1].setInitialCondition(0, 500, 0, -5);
+    
     bPause = false;
     bEndGame = false;
     
     particleSpeed = ofRandom(0.08,0.8);
+    bDidYouEvenPlayingMan = false;
+    bRedWin = bYellowWin = bDrawGame = false;
 }
 
 
 void testApp::resetScore(){
+    rScore = yScore = 0;
+}
+
+void testApp::checkWhoIsWinning(){
+    
+    if      (particles[0].particleStance == 1){//r
+        // r vs r = draw
+        if      (particles[1].particleStance == 1) bDrawGame = true; //bRedWin = bYellowWin = false;
+        // r vs p = lose
+        else if (particles[1].particleStance == 2) bYellowWin = true; //bRedWin = false;}
+        // r vs s = win
+        else if (particles[1].particleStance == 3) bRedWin = true; //bYellowWin = false;}
+    }
+    else if (particles[0].particleStance == 2){//p
+        if      (particles[1].particleStance == 1) bRedWin = true; //bYellowWin = false;}
+        else if (particles[1].particleStance == 2) bDrawGame = true; //bRedWin = bYellowWin = false;
+        else if (particles[1].particleStance == 3) bYellowWin = true; //bRedWin = false;}
+    }
+    else if (particles[0].particleStance == 3){//s
+        if      (particles[1].particleStance == 1 ) bYellowWin = true; //bRedWin = false;}
+        else if (particles[1].particleStance == 2 ) bRedWin = true; //bYellowWin = false;}
+        else if (particles[1].particleStance == 3 ) bDrawGame = true; //bRedWin = bYellowWin = false;
+    }
+    
+    if (bYellowWin && bDidYouEvenPlayingMan) yScore++;
+    if (bRedWin && bDidYouEvenPlayingMan) rScore++;
     
 }
 
@@ -106,15 +142,21 @@ void testApp::update(){
                     particles[i].update();
                 }
                 
-                float dis = particles[0].pos.distance(particles[1].pos);
+                dis = particles[0].pos.distance(particles[1].pos);
 //                cout<< dis <<endl;
+                
+                float disToSize = ofMap(dis, 0, 1000, 250, 100);
+                particles[0].size = disToSize;
+                particles[1].size = disToSize;
+                
                 if (dis < 10) {
+                    checkWhoIsWinning();
                     bEndGame = true;
                     endCountDownStart = ofGetSeconds();
                     endCountDown = 3;
                 }
             }
-            if (bEndGame) {
+            if (bEndGame && bDidYouEvenPlayingMan) {
                 if (endCountDownStart != ofGetSeconds()) {
                     endCountDown--;
                     endCountDownStart = ofGetSeconds();
@@ -127,8 +169,15 @@ void testApp::update(){
         }
         break;
         //------------------
+        case CREDITS:
+        {
+            
+        }
+        break;
+        //------------------
+
     }
-        
+    
 }
 
 //--------------------------------------------------------------
@@ -139,16 +188,18 @@ void testApp::draw(){
         case MAIN_MENU:
         {
             ofBackground(255);
-            ofSetColor(blue);
             for (int i = 0 ; i<MAIN_MENU_ITEMS; i++) {
+                if (i==1||i==2) ofSetColor(150,200);
+                else ofSetColor(0,200);
+
                 ofCircle(menuDots[i], 50);
             }
             
             ofSetColor(255);
-            string sOne = "Mode 1";
+            string sOne = "Crash\nMode";
             font.drawString(sOne,
                             menuDots[0].x-(int)font.stringWidth(sOne)/2,
-                            menuDots[0].y+(int)font.stringHeight(sOne)/2);
+                            menuDots[0].y); // coz have two lines
             
             string sTwo = "Mode 2";
             font.drawString(sTwo,
@@ -172,7 +223,7 @@ void testApp::draw(){
             
             
             if (bSplash) {
-                ofSetColor(blue);
+                ofSetColor(50);
                 ofRect(0, 0, ofGetWidth(), ofGetHeight());
                 
                 ofSetColor(255);
@@ -182,20 +233,26 @@ void testApp::draw(){
                                    menuDots[1].y+(int)fontBig.stringHeight(sTitle)/2);
                 
                 
-                string sTagline = "\" \nThe touch,\nthe grab,\nthe stroke,\nall of those things\nwe\'re going to be obsessed about.\n\"";
+                string sTagline = "\" \nThe touch,\nthe grab,\nthe stroke,\nall of those things\nwe\'re going to be obsessed about.\n\"\n                - Peter Molydeux\n\nTap to start";
                 font.drawString(sTagline,
                                    245,
-                                   menuDots[2].y+(int)font.stringHeight(sTagline)/2);
+                                   590);
+                
             }
-            
         }
         break;
         //------------------
         case GAME_PLAY:
         {
             
-            ofBackground(86, 217, 205);
-            ofSetColor(247, 255, 236);
+//            ofPushMatrix();
+//            ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+//            float scale = ofMap(dis, 0, 1000, 2.0, 0.5);
+//            ofScale(scale, scale);
+            
+            ofBackground(255);
+            ofSetColor(255,255);
+//            ofSetColor(red);
             if (command_up == "rock") {
                 particles[0].particleStance = 1;
                 particles[0].draw();
@@ -210,7 +267,7 @@ void testApp::draw(){
                 particles[0].draw();
             }
             
-            ofSetColor(100);
+//            ofSetColor(yellow);
             if (command_down == "rock") {
                 
                 particles[1].particleStance = 1;
@@ -225,27 +282,46 @@ void testApp::draw(){
                 particles[1].draw();
             }
             
+//            ofPopMatrix();
+            
             //menu
             ofPushStyle();
             ofNoFill();
-            ofSetLineWidth(2);
-            ofSetColor(255,100);
+            ofSetLineWidth(3);
+            ofSetColor(80,100);
             ofCircle(menuButton[0], menuButtonSize);
             ofCircle(menuButton[1], menuButtonSize);
             ofLine(menuButton[0].x, menuButton[0].y, menuButtonSize, ofGetHeight()/2);
+            
+            ofCircle(ofGetWidth()-70, ofGetHeight()/2, 65);
             ofPopStyle();
             
+            //score
+            ofSetColor(red);
+            string sRScore = ofToString(rScore);
+            fontBig.drawString(sRScore,
+                            50-(int)font.stringWidth(sRScore)/2,
+                            ofGetHeight()/2-25-(int)font.stringHeight(sRScore)/2);
+            
+            
+            ofSetColor(yellow);
+            string sYScore = ofToString(yScore);
+            fontBig.drawString(sYScore,
+                            50-(int)font.stringWidth(sYScore)/2,
+                            ofGetHeight()/2+80+(int)font.stringHeight(sYScore));
 
-            ofSetColor(255,200);
+            //pauseButton
+            ofSetColor(80,100);
             ofSetRectMode(OF_RECTMODE_CENTER);
-            ofRect( ofGetWidth()-70, ofGetHeight()/2-15, 80, 20);
-            ofRect( ofGetWidth()-70, ofGetHeight()/2+15, 80, 20);
+            ofRect( ofGetWidth()-55, ofGetHeight()/2, 20, 60);
+            ofRect( ofGetWidth()-85, ofGetHeight()/2, 20, 60);
             ofSetRectMode(OF_RECTMODE_CORNER);
+            
             
             if (bPause) {
                 ofSetColor(255,200);
                 ofRect(0, 0, ofGetWidth(), ofGetHeight());
-                ofSetColor(blue);
+                ofSetColor(0, 200);
                 for (int i =0 ; i<PAUSE_MENU_ITEMS; i++) {
                     ofCircle(pauseMenu[i], 50);
                 }
@@ -262,24 +338,41 @@ void testApp::draw(){
             }
             
             else if (bEndGame) {
-                ofSetColor(255,200);
+                if (!bDidYouEvenPlayingMan) ofSetColor(0,200);
+                else if (bRedWin)       ofSetColor(red);
+                else if (bYellowWin)    ofSetColor(yellow);
+                else if (bDrawGame)     ofSetColor(0, 200);
+                else ofSetColor(ofColor::salmon);
                 ofRect(0, 0, ofGetWidth(), ofGetHeight());
-                ofSetColor(blue);
+                
                 for (int i =0; i<END_MENU_ITEMS; i++) {
+                    ofPushStyle();
+                    if (i ==1) ofSetColor(255);
+                    else ofSetColor(0,200);
                     ofCircle(endGameMenu[i], 50);
+                    ofPopStyle();
                 }
                 
-                ofSetColor(255);
-                
                 string sCountDown = ofToString(endCountDown);
+                if (bDidYouEvenPlayingMan == false) sCountDown = "";
                 fontBig.drawString(sCountDown,
-                                   endGameMenu[0].x-(int)fontBig.stringWidth(sCountDown)/2-3,
-                                   endGameMenu[0].y+(int)fontBig.stringHeight(sCountDown)/2);
-
+                                   endGameMenu[1].x-(int)fontBig.stringWidth(sCountDown)/2-3,
+                                   endGameMenu[1].y+(int)fontBig.stringHeight(sCountDown)/2);
+                
+                ofSetColor(255);
+                string sWhoWin = "";
+                if (!bDidYouEvenPlayingMan) sWhoWin = "No Session";
+                else if (bYellowWin) sWhoWin = "Yellow Win";
+                else if (bRedWin) sWhoWin = "Red Win";
+                else if (bDrawGame) sWhoWin = "Draw Game";
+                
+                font.drawString(sWhoWin, 20, ofGetHeight() - 24);
+                
+                
                 string sEnd1 = "Continue";
                 font.drawString(sEnd1,
-                                endGameMenu[1].x-(int)font.stringWidth(sEnd1)/2,
-                                endGameMenu[1].y+(int)font.stringHeight(sEnd1)/2);
+                                endGameMenu[0].x-(int)font.stringWidth(sEnd1)/2,
+                                endGameMenu[0].y+(int)font.stringHeight(sEnd1)/2);
                 
                 string sEnd2 = "Main Menu";
                 font.drawString(sEnd2,
@@ -290,6 +383,18 @@ void testApp::draw(){
         }
         break;
         //------------------
+        case CREDITS:
+        {
+            ofBackground(50);
+            ofSetColor(255);
+            fontBig.drawString("Kingda\nKa", 245, menuDots[0].y);
+            font.drawString("A game by\n\nPaul Cheng\nFirm Read Tothong\nClovis Akira", 245, menuDots[1].y);
+            font.drawString("Part of MolyJam 2013 Game Jam\n\n\" \nThe touch,\nthe grab,\nthe stroke,\nall of those things\nwe\'re going to be obsessed about.\n\"\n                - Peter Molydeux", 245, menuDots[3].y);
+            
+        }
+        break;
+        //------------------
+
     }
     
         
@@ -299,6 +404,7 @@ void testApp::draw(){
 void testApp::touchDown(ofTouchEventArgs & touch){
     
     ofPoint touchPoint(touch.x, touch.y);
+    bDidYouEvenPlayingMan = true;
     switch (condition)
     {
             
@@ -316,6 +422,9 @@ void testApp::touchDown(ofTouchEventArgs & touch){
                 if (menuDots[0].distance(touchPoint) < 50) {
                     reset();
                     condition = GAME_PLAY;
+                }
+                else if (menuDots[4].distance(touchPoint) < 50){
+                    condition = CREDITS;
                 }
             }
         }
@@ -360,7 +469,7 @@ void testApp::touchDown(ofTouchEventArgs & touch){
             }
             
             if (bEndGame == true) {
-                if (endGameMenu[1].distance(touchPoint) < 50) {
+                if (endGameMenu[0].distance(touchPoint) < 50) {
                     reset();
                 }
                 if (endGameMenu[2].distance(touchPoint) < 50) {
@@ -370,7 +479,14 @@ void testApp::touchDown(ofTouchEventArgs & touch){
             }
         }
         break;
+            //------------------
+        case CREDITS:
+        {
+            condition = MAIN_MENU;
+        }
+        break;
         //------------------
+
     }
 }
 
@@ -422,6 +538,13 @@ void testApp::touchMoved(ofTouchEventArgs & touch){
         }
         break;
         //------------------
+        case CREDITS:
+        {
+            
+        }
+        break;
+        //------------------
+
     }
        
     
@@ -486,6 +609,13 @@ void testApp::touchUp(ofTouchEventArgs & touch){
             
         break;
         //------------------
+        case CREDITS:
+        {
+            
+        }
+        break;
+        //------------------
+
     }
     
     
