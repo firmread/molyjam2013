@@ -14,6 +14,7 @@
 enum game_condition {
     MAIN_MENU,
     GAME_PLAY,
+    TUTORIAL,
     CREDITS
 };
 
@@ -79,6 +80,8 @@ public:
     int rScore, yScore;
     
     float dis;
+    
+    ofImage hand[3];
     
     //*****************crash effect*******************
     bool bEffect;

@@ -20,15 +20,14 @@ void particle::setupImage(int playerNumber){
         player[0].loadImage("assets/rHamm.png");
         player[1].loadImage("assets/rPaper.png");
         player[2].loadImage("assets/rSciss.png");
-        
         face[0].loadImage("assets/yWin.png");
         face[1].loadImage("assets/yLose.png");
     }
     if (playerNumber == 1) 
     {
-    player[0].loadImage("assets/yHamm.png");
-    player[1].loadImage("assets/yPaper.png");
-    player[2].loadImage("assets/ySciss.png");
+        player[0].loadImage("assets/yHamm.png");
+        player[1].loadImage("assets/yPaper.png");
+        player[2].loadImage("assets/ySciss.png");
         face[0].loadImage("assets/rWin.png");
         face[1].loadImage("assets/rLose.png");
     }
@@ -245,7 +244,7 @@ void particle::draw(){
             player[2].draw(-size/2,-size/2, size, size);
         }
         
-        face[faceNum].draw(-size/2,-size/2, size, size);
+        face[faceNum].draw(-size/5,-size/15, size/2, size/2);
     }
     ofPopMatrix();
     

@@ -62,12 +62,17 @@ void testApp::setup(){
     
     rScore = yScore = 0;
 
+    hand[0].loadImage("tutorial/Pinch.png");
+    hand[1].loadImage("tutorial/Spread.png");
+    hand[2].loadImage("tutorial/2x_Tap.png");
+    
     //*********effect**************************
     bEffect = false;
     frameRate = 60;
     zoom = 0;
     zoomSpeed = 0.4f;
     zoomPct = 0;
+    
     //*********sound**************************
     sound[0].loadSound("sound/gameStart.wav");
     sound[1].loadSound("sound/gameOver.wav");
@@ -199,8 +204,8 @@ void testApp::update(){
                 }
                 else if (dis < 10) {
                     frameRate = 60;
-                    bEffect = false;
                     bEndGame = true;
+                    bEffect = false;
                     endCountDownStart = ofGetSeconds();
                     endCountDown = 3;
                     if (bYellowWin && bDidYouEvenPlayingMan) yScore++;
@@ -217,6 +222,12 @@ void testApp::update(){
                 }
 
             }
+        }
+        break;
+        //------------------
+        case TUTORIAL:
+        {
+            
         }
         break;
         //------------------
@@ -243,8 +254,8 @@ void testApp::draw(){
         if (zoomPct > 1) {
             zoomPct = 1;
         }else{
-            x = (int)ofRandom(-30,30);
-            y = (int)ofRandom(-20,20);
+            x = (int)ofRandom(-10,10);
+            y = (int)ofRandom(-30,30);
             ofBackground(int(ofRandom(0,70)));
         }
         
@@ -399,14 +410,14 @@ void testApp::camera(){
             ofSetColor(red);
             string sRScore = ofToString(rScore);
             fontBig.drawString(sRScore,
-                               50-(int)font.stringWidth(sRScore)/2,
+                               30-(int)font.stringWidth(sRScore)/2,
                                ofGetHeight()/2-25-(int)font.stringHeight(sRScore)/2);
             
             
             ofSetColor(yellow);
             string sYScore = ofToString(yScore);
             fontBig.drawString(sYScore,
-                               50-(int)font.stringWidth(sYScore)/2,
+                               30-(int)font.stringWidth(sYScore)/2,
                                ofGetHeight()/2+80+(int)font.stringHeight(sYScore));
             
             //pauseButton
@@ -480,8 +491,23 @@ void testApp::camera(){
                 
             }
         }
-            break;
-            //------------------
+        break;
+        //------------------
+        case TUTORIAL:
+        {
+            int handSize = 150;
+            ofBackground(blue);
+            for (int i =0; i<3; i++) {
+                ofPushMatrix();
+                ofTranslate(ofGetWidth()/2, ofGetHeight()*(i+1)/4);
+                
+                int h = handSize* hand[i].width/hand[i].height;
+                hand[i].draw( -handSize/2 , -h/2, handSize, h);
+            }
+        }
+        break;
+
+        //------------------
         case CREDITS:
         {
             ofBackground(50);
@@ -491,8 +517,8 @@ void testApp::camera(){
             font.drawString("Part of MolyJam 2013 Game Jam\n\n\" \nThe touch,\nthe grab,\nthe stroke,\nall of those things\nwe\'re going to be obsessed about.\n\"\n                - Peter Molydeux", 245, menuDots[3].y);
             
         }
-            break;
-            //------------------
+        break;
+        //------------------
             
     }
 
@@ -521,6 +547,9 @@ void testApp::touchDown(ofTouchEventArgs & touch){
                     reset();
                     condition = GAME_PLAY;
                     sound[0].play();
+                }
+                else if (menuDots[3].distance(touchPoint) < 50){
+                    condition = TUTORIAL;
                 }
                 else if (menuDots[4].distance(touchPoint) < 50){
                     condition = CREDITS;
@@ -578,7 +607,14 @@ void testApp::touchDown(ofTouchEventArgs & touch){
             }
         }
         break;
-            //------------------
+        //------------------
+        case TUTORIAL:
+        {
+            condition = MAIN_MENU;
+        }
+        break;
+
+        //------------------
         case CREDITS:
         {
             condition = MAIN_MENU;
@@ -640,6 +676,13 @@ void testApp::touchMoved(ofTouchEventArgs & touch){
             }
         }
         break;
+        //------------------
+        case TUTORIAL:
+        {
+            
+        }
+        break;
+
         //------------------
         case CREDITS:
         {
@@ -714,6 +757,13 @@ void testApp::touchUp(ofTouchEventArgs & touch){
         }
             
         break;
+        //------------------
+        case TUTORIAL:
+        {
+            
+        }
+        break;
+
         //------------------
         case CREDITS:
         {
