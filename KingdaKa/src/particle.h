@@ -25,7 +25,7 @@ class particle
 		void setInitialCondition(float px, float py, float vx, float vy);
         void update();
         void draw();
-	
+    
 		void bounceOffWalls();
 	
 	
@@ -36,7 +36,9 @@ class particle
     int playerNo;
     bool bCartoonMode;
     ofImage player[3];
+    ofImage face[2];
     float size;
+    int faceNum;
     
     protected:
     private:

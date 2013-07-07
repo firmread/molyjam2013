@@ -5,6 +5,7 @@ void testApp::setup(){
 	// initialize the accelerometer
 	ofxAccelerometer.setup();
 	ofSetVerticalSync(true);
+    
 	ofSetFrameRate(60);
     ofEnableSmoothing();
     ofEnableAlphaBlending();
@@ -12,9 +13,6 @@ void testApp::setup(){
     ofSetCircleResolution(120);
 	//If you want a landscape oreintation 
 	//iPhoneSetOrientation(OFXIPHONE_ORIENTATION_LANDSCAPE_RIGHT);
-	
-    
-    reset();
     
     bSplash = true;
     particles[0].angle = 180;
@@ -64,33 +62,62 @@ void testApp::setup(){
     
     rScore = yScore = 0;
 
-    
+    //*********effect**************************
+    bEffect = false;
+    frameRate = 60;
+    zoom = 0;
+    zoomSpeed = 0.4f;
+    zoomPct = 0;
+    //*********sound**************************
+    sound[0].loadSound("sound/gameStart.wav");
+    sound[1].loadSound("sound/gameOver.wav");
+    sound[2].loadSound("sound/touch01.wav");
+    sound[3].loadSound("sound/touch02.wav");
+    sound[4].loadSound("sound/touch03.wav");
+    sound[5].loadSound("sound/drawGame.wav");
+
+    sound[0].setMultiPlay(false);
+    sound[1].setMultiPlay(false);
+    sound[2].setMultiPlay(true);
+    sound[3].setMultiPlay(true);
+    sound[4].setMultiPlay(true);
+    sound[5].setMultiPlay(false);
+
+    //*********background Animation*************************
+    bgAnime.setup(384,512);
 }
 
 //--------------------------------------------------------------
-
 void testApp::reset(){
     
     
     particles[0].setInitialCondition(384, 24, 0, 5);
     particles[1].setInitialCondition(384, 1000, 0, -5);
-    
+    particles[0].size = 150;
+    particles[1].size = 150;
+    particles[0].faceNum = 0;
+    particles[1].faceNum = 0;
 //    particles[0].setInitialCondition(0, -500, 0, 5);
 //    particles[1].setInitialCondition(0, 500, 0, -5);
-    
     bPause = false;
     bEndGame = false;
-    
-    particleSpeed = ofRandom(0.08,0.8);
+    particleSpeed = ofRandom(0.2,0.8);
     bDidYouEvenPlayingMan = false;
     bRedWin = bYellowWin = bDrawGame = false;
+
+    for (int i=0; i<6; i++) {
+         sound[i].stop();
+    }
+
+    sound[0].play();
 }
 
-
+//--------------------------------------------------------------
 void testApp::resetScore(){
     rScore = yScore = 0;
 }
 
+//--------------------------------------------------------------
 void testApp::checkWhoIsWinning(){
     
     if      (particles[0].particleStance == 1){//r
@@ -112,14 +139,26 @@ void testApp::checkWhoIsWinning(){
         else if (particles[1].particleStance == 3 ) bDrawGame = true; //bRedWin = bYellowWin = false;
     }
     
-    if (bYellowWin && bDidYouEvenPlayingMan) yScore++;
-    if (bRedWin && bDidYouEvenPlayingMan) rScore++;
+    
+    if (bDrawGame) {
+        if (!sound[5].getIsPlaying()) {
+            sound[5].play();
+        }
+    }
+    else if (bRedWin || bYellowWin) {
+        if (!sound[1].getIsPlaying()) {
+           sound[1].play(); 
+        }
+    }
     
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
 
+    ofSoundUpdate();
+    ofSetFrameRate(frameRate);
+    
     switch (condition) {
         //------------------
         case MAIN_MENU:
@@ -129,7 +168,6 @@ void testApp::update(){
         //------------------
         case GAME_PLAY:
         {
-            
             if (!bPause && !bEndGame){
                 for (int i =0; i<2; i++) {
                     particles[i].resetForce();
@@ -143,17 +181,30 @@ void testApp::update(){
                 }
                 
                 dis = particles[0].pos.distance(particles[1].pos);
-//                cout<< dis <<endl;
+//              cout<< dis <<endl;
                 
-                float disToSize = ofMap(dis, 0, 1000, 250, 100);
-                particles[0].size = disToSize;
-                particles[1].size = disToSize;
+//              float disToSize = ofMap(dis, 0, 1000, 250, 100);
+//              particles[0].size = disToSize;
+//              particles[1].size = disToSize;
                 
-                if (dis < 10) {
+                //********crashing effect*****************************************
+                if (dis < 80 && dis > 10) {
+                    bEffect = true;
+                    frameRate = 10;
+                    particles[0].vel.y = 3;
+                    particles[1].vel.y = -3;
                     checkWhoIsWinning();
+                    particleSpeed = 0.08;
+                    
+                }
+                else if (dis < 10) {
+                    frameRate = 60;
+                    bEffect = false;
                     bEndGame = true;
                     endCountDownStart = ofGetSeconds();
                     endCountDown = 3;
+                    if (bYellowWin && bDidYouEvenPlayingMan) yScore++;
+                    if (bRedWin && bDidYouEvenPlayingMan) rScore++;
                 }
             }
             if (bEndGame && bDidYouEvenPlayingMan) {
@@ -182,16 +233,59 @@ void testApp::update(){
 
 //--------------------------------------------------------------
 void testApp::draw(){
+    ofBackground(255);
+    bgAnime.draw();
+    ofPushMatrix();
+    float x=0;
+    float y=0;
+    if (bEffect) {
+        zoomPct+= zoomSpeed;
+        if (zoomPct > 1) {
+            zoomPct = 1;
+        }else{
+            x = (int)ofRandom(-30,30);
+            y = (int)ofRandom(-20,20);
+            ofBackground(int(ofRandom(0,70)));
+        }
+        
+        zoom = (1-zoomPct)*zoom + zoomPct*400;
+       
+        if (bYellowWin) {
+            particles[0].size-=10;
+            particles[0].faceNum = 1;
+        }else if(bRedWin){
+            particles[1].size-=10;
+            particles[1].faceNum = 1;
+        }
+        
+        if (particles[1].size < 0) {
+            particles[1].size = 0;
+        }
+        
+        if (particles[0].size < 0) {
+            particles[0].size = 0;
+        }
+        
+    }else{
+        zoom = 0;
+        zoomPct = 0;
+    }
+    ofTranslate(x, y,zoom);
+    camera();
+    ofPopMatrix();
     
+}
+//--------------------------------------------------------------
+void testApp::camera(){
     switch (condition) {
-        //------------------
+            //------------------
         case MAIN_MENU:
         {
             ofBackground(255);
             for (int i = 0 ; i<MAIN_MENU_ITEMS; i++) {
                 if (i==1||i==2) ofSetColor(150,200);
                 else ofSetColor(0,200);
-
+                
                 ofCircle(menuDots[i], 50);
             }
             
@@ -235,27 +329,30 @@ void testApp::draw(){
                 
                 string sTagline = "\" \nThe touch,\nthe grab,\nthe stroke,\nall of those things\nwe\'re going to be obsessed about.\n\"\n                - Peter Molydeux\n\nTap to start";
                 font.drawString(sTagline,
-                                   245,
-                                   590);
+                                245,
+                                590);
                 
             }
         }
-        break;
-        //------------------
+            break;
+            //------------------
         case GAME_PLAY:
         {
             
-//            ofPushMatrix();
-//            ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
-//            float scale = ofMap(dis, 0, 1000, 2.0, 0.5);
-//            ofScale(scale, scale);
+            //            ofPushMatrix();
+            //            ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+            //            float scale = ofMap(dis, 0, 1000, 2.0, 0.5);
+            //            ofScale(scale, scale);
             
-            ofBackground(255);
+            
             ofSetColor(255,255);
-//            ofSetColor(red);
+            //          ofSetColor(red);
+            
+
             if (command_up == "rock") {
                 particles[0].particleStance = 1;
                 particles[0].draw();
+              
             }
             else if(command_up == "paper"){
                 particles[0].particleStance = 2;
@@ -267,7 +364,7 @@ void testApp::draw(){
                 particles[0].draw();
             }
             
-//            ofSetColor(yellow);
+            //            ofSetColor(yellow);
             if (command_down == "rock") {
                 
                 particles[1].particleStance = 1;
@@ -282,7 +379,9 @@ void testApp::draw(){
                 particles[1].draw();
             }
             
-//            ofPopMatrix();
+            
+            
+            //          ofPopMatrix();
             
             //menu
             ofPushStyle();
@@ -300,16 +399,16 @@ void testApp::draw(){
             ofSetColor(red);
             string sRScore = ofToString(rScore);
             fontBig.drawString(sRScore,
-                            50-(int)font.stringWidth(sRScore)/2,
-                            ofGetHeight()/2-25-(int)font.stringHeight(sRScore)/2);
+                               50-(int)font.stringWidth(sRScore)/2,
+                               ofGetHeight()/2-25-(int)font.stringHeight(sRScore)/2);
             
             
             ofSetColor(yellow);
             string sYScore = ofToString(yScore);
             fontBig.drawString(sYScore,
-                            50-(int)font.stringWidth(sYScore)/2,
-                            ofGetHeight()/2+80+(int)font.stringHeight(sYScore));
-
+                               50-(int)font.stringWidth(sYScore)/2,
+                               ofGetHeight()/2+80+(int)font.stringHeight(sYScore));
+            
             //pauseButton
             ofSetColor(80,100);
             ofSetRectMode(OF_RECTMODE_CENTER);
@@ -381,8 +480,8 @@ void testApp::draw(){
                 
             }
         }
-        break;
-        //------------------
+            break;
+            //------------------
         case CREDITS:
         {
             ofBackground(50);
@@ -392,12 +491,11 @@ void testApp::draw(){
             font.drawString("Part of MolyJam 2013 Game Jam\n\n\" \nThe touch,\nthe grab,\nthe stroke,\nall of those things\nwe\'re going to be obsessed about.\n\"\n                - Peter Molydeux", 245, menuDots[3].y);
             
         }
-        break;
-        //------------------
-
+            break;
+            //------------------
+            
     }
-    
-        
+
 }
 
 //--------------------------------------------------------------
@@ -422,6 +520,7 @@ void testApp::touchDown(ofTouchEventArgs & touch){
                 if (menuDots[0].distance(touchPoint) < 50) {
                     reset();
                     condition = GAME_PLAY;
+                    sound[0].play();
                 }
                 else if (menuDots[4].distance(touchPoint) < 50){
                     condition = CREDITS;
@@ -432,7 +531,7 @@ void testApp::touchDown(ofTouchEventArgs & touch){
         //------------------
         case GAME_PLAY:
         {
-            if (!bPause && !bEndGame) {
+            if (!bPause && !bEndGame && !bEffect) {
                 if (rect_up.inside(touch.x, touch.y)) {
                     finger temp;
                     temp.ID = touch.id;
@@ -510,8 +609,10 @@ void testApp::touchMoved(ofTouchEventArgs & touch){
                         float diff = preDis - dis;
                         if (diff > 10) {
                             command_up = "rock";
+                            sound[2].play();
                         }else if(diff < -10){
                             command_up = "paper";
+                            sound[3].play();
                         }
                         
                     }
@@ -528,8 +629,10 @@ void testApp::touchMoved(ofTouchEventArgs & touch){
                         float diff = preDis - dis;
                         if (diff > 10) {
                             command_down = "rock";
+                            sound[2].play();
                         }else if(diff < -10){
                             command_down = "paper";
+                            sound[3].play();
                         }
                         
                     }
@@ -564,6 +667,7 @@ void testApp::touchUp(ofTouchEventArgs & touch){
         //------------------
         case GAME_PLAY:{
             
+            
             if (mfinger_up.size()>1) {
                 for (int i =0; i<mfinger_up.size(); i++){
                     if (touch.id == mfinger_up[i].ID) {
@@ -573,6 +677,7 @@ void testApp::touchUp(ofTouchEventArgs & touch){
                         float diff = preDis - dis;
                         if (diff < 30 && diff > -30) {
                             command_up = "scissors";
+                            sound[4].play();
                         }
                     }
                 }
@@ -587,6 +692,7 @@ void testApp::touchUp(ofTouchEventArgs & touch){
                         float diff = preDis - dis;
                         if (diff < 30 && diff > -30) {
                             command_down = "scissors";
+                            sound[4].play();
                         }
                     }
                 }
@@ -622,8 +728,8 @@ void testApp::touchUp(ofTouchEventArgs & touch){
     
     
 }
-//--------------------------------------------------------------
 
+//--------------------------------------------------------------
 //--------------------------------------------------------------
 void testApp::touchDoubleTap(ofTouchEventArgs & touch){}
 void testApp::touchCancelled(ofTouchEventArgs & touch){}

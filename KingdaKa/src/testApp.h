@@ -5,7 +5,7 @@
 #include "ofxiPhoneExtras.h"
 #include "particle.h"
 #include "finger.h"
-
+#include "bgAnimation.h"
 
 #define MAIN_MENU_ITEMS 5
 #define PAUSE_MENU_ITEMS 2
@@ -23,6 +23,7 @@ public:
     void setup();
     void update();
     void draw();
+    void camera();
     void exit();
 
     void touchDown(ofTouchEventArgs & touch);
@@ -78,7 +79,16 @@ public:
     int rScore, yScore;
     
     float dis;
+    
+    //*****************crash effect*******************
+    bool bEffect;
+    int frameRate;
+    float zoom, zoomSpeed, zoomPct;
+    //*******************sound*******************
 
+    ofSoundPlayer  sound[6];
+    //*******************background animation*******************
+    bgAnimation bgAnime;
 };
 
 
