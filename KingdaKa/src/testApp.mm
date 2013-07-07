@@ -497,13 +497,31 @@ void testApp::camera(){
         {
             int handSize = 150;
             ofBackground(blue);
+            ofSetColor(255);
             for (int i =0; i<3; i++) {
                 ofPushMatrix();
-                ofTranslate(ofGetWidth()/2, ofGetHeight()*(i+1)/4);
+                ofTranslate(ofGetWidth()/2, (ofGetHeight()*(i+1)/4)-40);
                 
                 int h = handSize* hand[i].width/hand[i].height;
                 hand[i].draw( -handSize/2 , -h/2, handSize, h);
             }
+            
+            ofSetColor(0,200);
+            string descript1 = "Rock\nPinch two fingers";
+            font.drawString(descript1,
+                            ofGetWidth()/2-(int)font.stringWidth(descript1)/2,
+                            ofGetHeight()*(1)/4+(int)font.stringHeight(descript1)/2 +40);
+            
+            string descript2 = "Paper\nSpread two fingers";
+            font.drawString(descript2,
+                            ofGetWidth()/2-(int)font.stringWidth(descript2)/2,
+                            ofGetHeight()*(2)/4+(int)font.stringHeight(descript2)/2 +40);
+            
+            string descript3 = "Scissors\nTap with two fingers";
+            font.drawString(descript3,
+                            ofGetWidth()/2-(int)font.stringWidth(descript3)/2,
+                            ofGetHeight()*(3)/4+(int)font.stringHeight(descript3)/2 +40);
+            
         }
         break;
 
