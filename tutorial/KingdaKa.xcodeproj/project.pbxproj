@@ -12,6 +12,7 @@
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
 		4C4C2C4C1788686A0062AA75 /* particle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C4C2C4A1788686A0062AA75 /* particle.cpp */; };
 		4C4C2C501788761E0062AA75 /* finger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C4C2C4E1788761E0062AA75 /* finger.cpp */; };
+		4C4C2C5C178917310062AA75 /* tutorial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C4C2C5A178917310062AA75 /* tutorial.cpp */; };
 		5326AEA810A23A0500278DE6 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5326AEA710A23A0500278DE6 /* CoreLocation.framework */; };
 		53F323EB10A20EDB00E0DAE4 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53F323EA10A20EDB00E0DAE4 /* OpenAL.framework */; };
 		BB16EBD20F2B2A9500518274 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB16EBD10F2B2A9500518274 /* OpenGLES.framework */; };
@@ -57,6 +58,8 @@
 		4C4C2C4B1788686A0062AA75 /* particle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = particle.h; sourceTree = "<group>"; };
 		4C4C2C4E1788761E0062AA75 /* finger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = finger.cpp; sourceTree = "<group>"; };
 		4C4C2C4F1788761E0062AA75 /* finger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = finger.h; sourceTree = "<group>"; };
+		4C4C2C5A178917310062AA75 /* tutorial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tutorial.cpp; sourceTree = "<group>"; };
+		4C4C2C5B178917310062AA75 /* tutorial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tutorial.h; sourceTree = "<group>"; };
 		5326AEA710A23A0500278DE6 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		53F323EA10A20EDB00E0DAE4 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		BB16EBD10F2B2A9500518274 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -194,6 +197,8 @@
 				4C4C2C4F1788761E0062AA75 /* finger.h */,
 				4C4C2C4A1788686A0062AA75 /* particle.cpp */,
 				4C4C2C4B1788686A0062AA75 /* particle.h */,
+				4C4C2C5A178917310062AA75 /* tutorial.cpp */,
+				4C4C2C5B178917310062AA75 /* tutorial.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -298,6 +303,7 @@
 				E4D8936F11527B74007E1F53 /* testApp.mm in Sources */,
 				4C4C2C4C1788686A0062AA75 /* particle.cpp in Sources */,
 				4C4C2C501788761E0062AA75 /* finger.cpp in Sources */,
+				4C4C2C5C178917310062AA75 /* tutorial.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

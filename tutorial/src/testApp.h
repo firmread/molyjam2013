@@ -5,11 +5,15 @@
 #include "ofxiPhoneExtras.h"
 #include "particle.h"
 #include "finger.h"
+#include "tutorial.h"
 
 enum game_condition {
     MAIN_MENU,
-    GAME_PLAY
+    GAME_PLAY,
+    TUTORIAL,
 };
+
+
 
 class testApp : public ofxiPhoneApp{
 	
@@ -33,7 +37,7 @@ class testApp : public ofxiPhoneApp{
         void deviceOrientationChanged(int newOrientation);
     
         game_condition condition;
-    
+        
     
     
     //MENU
@@ -61,6 +65,9 @@ class testApp : public ofxiPhoneApp{
     ofPoint pauseMenu[2];
     
     bool bEndGame;
+    
+    
+    tutorial mTurorial;
 
 };
 
