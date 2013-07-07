@@ -13,9 +13,6 @@ void testApp::setup(){
     ofSetCircleResolution(120);
 	//If you want a landscape oreintation 
 	//iPhoneSetOrientation(OFXIPHONE_ORIENTATION_LANDSCAPE_RIGHT);
-	
-    
-    reset();
     
     bSplash = true;
     particles[0].angle = 180;
@@ -65,16 +62,26 @@ void testApp::setup(){
     
     rScore = yScore = 0;
 
-    //effect
+    //*********effect**************************
     bEffect = false;
     frameRate = 60;
     zoom = 0;
-    zoomSpeed = 0.5f;
+    zoomSpeed = 0.4f;
     zoomPct = 0;
+    //*********sound**************************
+    sound[0].loadSound("sound/gameStart.wav");
+    sound[1].loadSound("sound/gameOver.wav");
+    sound[2].loadSound("sound/touch01.wav");
+    sound[3].loadSound("sound/touch02.wav");
+    sound[4].loadSound("sound/touch03.wav");
+    sound[0].setMultiPlay(false);
+    sound[1].setMultiPlay(false);
+    sound[2].setMultiPlay(true);
+    sound[3].setMultiPlay(true);
+    sound[4].setMultiPlay(true);
 }
 
 //--------------------------------------------------------------
-
 void testApp::reset(){
     
     
@@ -86,20 +93,24 @@ void testApp::reset(){
     particles[1].faceNum = 0;
 //    particles[0].setInitialCondition(0, -500, 0, 5);
 //    particles[1].setInitialCondition(0, 500, 0, -5);
-    
     bPause = false;
     bEndGame = false;
-    
     particleSpeed = ofRandom(0.08,0.8);
     bDidYouEvenPlayingMan = false;
     bRedWin = bYellowWin = bDrawGame = false;
+
+    if (sound[1].getIsPlaying()) {
+        sound[1].stop();
+    }
+    sound[0].play();
 }
 
-
+//--------------------------------------------------------------
 void testApp::resetScore(){
     rScore = yScore = 0;
 }
 
+//--------------------------------------------------------------
 void testApp::checkWhoIsWinning(){
     
     if      (particles[0].particleStance == 1){//r
@@ -128,7 +139,7 @@ void testApp::checkWhoIsWinning(){
 //--------------------------------------------------------------
 void testApp::update(){
 
-    
+    ofSoundUpdate();
     ofSetFrameRate(frameRate);
     
     switch (condition) {
@@ -140,7 +151,6 @@ void testApp::update(){
         //------------------
         case GAME_PLAY:
         {
-            
             if (!bPause && !bEndGame){
                 for (int i =0; i<2; i++) {
                     particles[i].resetForce();
@@ -160,7 +170,7 @@ void testApp::update(){
 //              particles[0].size = disToSize;
 //              particles[1].size = disToSize;
                 
-                //crash effect
+                //********crashing effect*****************************************
                 if (dis < 80 && dis > 10) {
                     bEffect = true;
                     frameRate = 10;
@@ -168,6 +178,9 @@ void testApp::update(){
                     particles[1].vel.y = -3;
                     checkWhoIsWinning();
                     particleSpeed = 0.08;
+                    if (!sound[1].getIsPlaying()) {
+                        sound[1].play();
+                    }
                 }
                 else if (dis < 10) {
                     frameRate = 60;
@@ -177,7 +190,6 @@ void testApp::update(){
                     endCountDown = 3;
                     if (bYellowWin && bDidYouEvenPlayingMan) yScore++;
                     if (bRedWin && bDidYouEvenPlayingMan) rScore++;
-                   
                 }
             }
             if (bEndGame && bDidYouEvenPlayingMan) {
@@ -216,12 +228,12 @@ void testApp::draw(){
         if (zoomPct > 1) {
             zoomPct = 1;
         }else{
-            x = (int)ofRandom(0,60);
-            y = (int)ofRandom(0,60);
+            x = (int)ofRandom(-30,30);
+            y = (int)ofRandom(-20,20);
             ofBackground(int(ofRandom(0,70)));
         }
         
-        zoom = (1-zoomPct)*zoom + zoomPct*450;
+        zoom = (1-zoomPct)*zoom + zoomPct*400;
        
         if (bYellowWin) {
             particles[0].size-=10;
@@ -321,9 +333,11 @@ void testApp::camera(){
             ofSetColor(255,255);
             //          ofSetColor(red);
             
+
             if (command_up == "rock") {
                 particles[0].particleStance = 1;
                 particles[0].draw();
+              
             }
             else if(command_up == "paper"){
                 particles[0].particleStance = 2;
@@ -352,7 +366,7 @@ void testApp::camera(){
             
             
             
-            //            ofPopMatrix();
+            //          ofPopMatrix();
             
             //menu
             ofPushStyle();
@@ -491,6 +505,7 @@ void testApp::touchDown(ofTouchEventArgs & touch){
                 if (menuDots[0].distance(touchPoint) < 50) {
                     reset();
                     condition = GAME_PLAY;
+                    sound[0].play();
                 }
                 else if (menuDots[4].distance(touchPoint) < 50){
                     condition = CREDITS;
@@ -579,8 +594,10 @@ void testApp::touchMoved(ofTouchEventArgs & touch){
                         float diff = preDis - dis;
                         if (diff > 10) {
                             command_up = "rock";
+                            sound[2].play();
                         }else if(diff < -10){
                             command_up = "paper";
+                            sound[3].play();
                         }
                         
                     }
@@ -597,8 +614,10 @@ void testApp::touchMoved(ofTouchEventArgs & touch){
                         float diff = preDis - dis;
                         if (diff > 10) {
                             command_down = "rock";
+                            sound[2].play();
                         }else if(diff < -10){
                             command_down = "paper";
+                            sound[3].play();
                         }
                         
                     }
@@ -642,6 +661,7 @@ void testApp::touchUp(ofTouchEventArgs & touch){
                         float diff = preDis - dis;
                         if (diff < 30 && diff > -30) {
                             command_up = "scissors";
+                            sound[4].play();
                         }
                     }
                 }
@@ -656,6 +676,7 @@ void testApp::touchUp(ofTouchEventArgs & touch){
                         float diff = preDis - dis;
                         if (diff < 30 && diff > -30) {
                             command_down = "scissors";
+                            sound[4].play();
                         }
                     }
                 }
@@ -691,8 +712,8 @@ void testApp::touchUp(ofTouchEventArgs & touch){
     
     
 }
-//--------------------------------------------------------------
 
+//--------------------------------------------------------------
 //--------------------------------------------------------------
 void testApp::touchDoubleTap(ofTouchEventArgs & touch){}
 void testApp::touchCancelled(ofTouchEventArgs & touch){}

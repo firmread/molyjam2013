@@ -84,7 +84,8 @@ public:
     bool bEffect;
     int frameRate;
     float zoom, zoomSpeed, zoomPct;
-
+    //sound
+    ofSoundPlayer  sound[5];
 };
 
 
