@@ -30,7 +30,7 @@ void testApp::setup(){
     command_up = myString[int(ofRandom(0, 2))];
     command_down = myString[int(ofRandom(0, 2))];
     
-    condition = MAIN_MENU;
+    condition = TUTORIAL;
     
     font.loadFont("impact.ttf", 14);
     fontBig.loadFont("impact.ttf", 72);
@@ -54,9 +54,12 @@ void testApp::setup(){
         pauseMenu[i].set(ofGetWidth()/2, (i+1)*ofGetHeight()/3);
     }
 
+    //--------------------------
+    mTurorial.setup();
+    
     
 }
-
+//--------------------------------------------------------------
 void testApp::reset(){
     
     
@@ -94,12 +97,17 @@ void testApp::update(){
                 float dis = particles[0].pos.distance(particles[1].pos);
                 cout<< dis <<endl;
                 if (dis < 10) {
-//                    cout<<"game over"<<endl;
+//                  cout<<"game over"<<endl;
                     bEndGame = true;
                 }
             }
         }
             break;
+        case TUTORIAL:{
+            
+            mTurorial.update();
+        
+        }break;
     }
         
 }
@@ -236,6 +244,14 @@ void testApp::draw(){
         }
             
             break;
+            
+        case TUTORIAL:{
+            
+            mTurorial.draw();
+            
+            
+            
+        }break;
     }
     
         
@@ -302,6 +318,12 @@ void testApp::touchDown(ofTouchEventArgs & touch){
         }
             
             break;
+            
+        case TUTORIAL:{
+            
+            mTurorial.touchDown(touch.x, touch.y, touch.id);
+            
+        }break;
     }
    
     
@@ -352,6 +374,13 @@ void testApp::touchMoved(ofTouchEventArgs & touch){
         }
             
             break;
+            
+        case TUTORIAL:{
+ 
+            mTurorial.touchMove(touch.x, touch.y, touch.id);
+            
+            
+        }break;
     }
        
     
@@ -413,6 +442,14 @@ void testApp::touchUp(ofTouchEventArgs & touch){
         }
             
             break;
+            
+        case TUTORIAL:{
+        
+            mTurorial.touchUp(touch.x, touch.y, touch.id);
+            
+        }break;
+            
+            
     }
     
     
