@@ -74,11 +74,17 @@ void testApp::setup(){
     sound[2].loadSound("sound/touch01.wav");
     sound[3].loadSound("sound/touch02.wav");
     sound[4].loadSound("sound/touch03.wav");
+    sound[5].loadSound("sound/drawGame.wav");
+
     sound[0].setMultiPlay(false);
     sound[1].setMultiPlay(false);
     sound[2].setMultiPlay(true);
     sound[3].setMultiPlay(true);
     sound[4].setMultiPlay(true);
+    sound[5].setMultiPlay(false);
+
+    //*********background Animation*************************
+    bgAnime.setup(384,512);
 }
 
 //--------------------------------------------------------------
@@ -95,13 +101,14 @@ void testApp::reset(){
 //    particles[1].setInitialCondition(0, 500, 0, -5);
     bPause = false;
     bEndGame = false;
-    particleSpeed = ofRandom(0.08,0.8);
+    particleSpeed = ofRandom(0.2,0.8);
     bDidYouEvenPlayingMan = false;
     bRedWin = bYellowWin = bDrawGame = false;
 
-    if (sound[1].getIsPlaying()) {
-        sound[1].stop();
+    for (int i=0; i<6; i++) {
+         sound[i].stop();
     }
+
     sound[0].play();
 }
 
@@ -132,7 +139,17 @@ void testApp::checkWhoIsWinning(){
         else if (particles[1].particleStance == 3 ) bDrawGame = true; //bRedWin = bYellowWin = false;
     }
     
-   
+    
+    if (bDrawGame) {
+        if (!sound[5].getIsPlaying()) {
+            sound[5].play();
+        }
+    }
+    else if (bRedWin || bYellowWin) {
+        if (!sound[1].getIsPlaying()) {
+           sound[1].play(); 
+        }
+    }
     
 }
 
@@ -178,9 +195,7 @@ void testApp::update(){
                     particles[1].vel.y = -3;
                     checkWhoIsWinning();
                     particleSpeed = 0.08;
-                    if (!sound[1].getIsPlaying()) {
-                        sound[1].play();
-                    }
+                    
                 }
                 else if (dis < 10) {
                     frameRate = 60;
@@ -219,7 +234,7 @@ void testApp::update(){
 //--------------------------------------------------------------
 void testApp::draw(){
     ofBackground(255);
-    
+    bgAnime.draw();
     ofPushMatrix();
     float x=0;
     float y=0;
@@ -651,6 +666,7 @@ void testApp::touchUp(ofTouchEventArgs & touch){
         break;
         //------------------
         case GAME_PLAY:{
+            
             
             if (mfinger_up.size()>1) {
                 for (int i =0; i<mfinger_up.size(); i++){
