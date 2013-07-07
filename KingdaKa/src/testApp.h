@@ -23,6 +23,7 @@ public:
     void setup();
     void update();
     void draw();
+    void camera();
     void exit();
 
     void touchDown(ofTouchEventArgs & touch);
@@ -78,6 +79,11 @@ public:
     int rScore, yScore;
     
     float dis;
+    
+    //crash effect
+    bool bEffect;
+    int frameRate;
+    float zoom, zoomSpeed, zoomPct;
 
 };
 

@@ -5,6 +5,7 @@ void testApp::setup(){
 	// initialize the accelerometer
 	ofxAccelerometer.setup();
 	ofSetVerticalSync(true);
+    
 	ofSetFrameRate(60);
     ofEnableSmoothing();
     ofEnableAlphaBlending();
@@ -64,7 +65,12 @@ void testApp::setup(){
     
     rScore = yScore = 0;
 
-    
+    //effect
+    bEffect = false;
+    frameRate = 60;
+    zoom = 0;
+    zoomSpeed = 0.5f;
+    zoomPct = 0;
 }
 
 //--------------------------------------------------------------
@@ -74,7 +80,10 @@ void testApp::reset(){
     
     particles[0].setInitialCondition(384, 24, 0, 5);
     particles[1].setInitialCondition(384, 1000, 0, -5);
-    
+    particles[0].size = 150;
+    particles[1].size = 150;
+    particles[0].faceNum = 0;
+    particles[1].faceNum = 0;
 //    particles[0].setInitialCondition(0, -500, 0, 5);
 //    particles[1].setInitialCondition(0, 500, 0, -5);
     
@@ -112,14 +121,16 @@ void testApp::checkWhoIsWinning(){
         else if (particles[1].particleStance == 3 ) bDrawGame = true; //bRedWin = bYellowWin = false;
     }
     
-    if (bYellowWin && bDidYouEvenPlayingMan) yScore++;
-    if (bRedWin && bDidYouEvenPlayingMan) rScore++;
+   
     
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
 
+    
+    ofSetFrameRate(frameRate);
+    
     switch (condition) {
         //------------------
         case MAIN_MENU:
@@ -143,17 +154,30 @@ void testApp::update(){
                 }
                 
                 dis = particles[0].pos.distance(particles[1].pos);
-//                cout<< dis <<endl;
+//              cout<< dis <<endl;
                 
-                float disToSize = ofMap(dis, 0, 1000, 250, 100);
-                particles[0].size = disToSize;
-                particles[1].size = disToSize;
+//              float disToSize = ofMap(dis, 0, 1000, 250, 100);
+//              particles[0].size = disToSize;
+//              particles[1].size = disToSize;
                 
-                if (dis < 10) {
+                //crash effect
+                if (dis < 80 && dis > 10) {
+                    bEffect = true;
+                    frameRate = 10;
+                    particles[0].vel.y = 3;
+                    particles[1].vel.y = -3;
                     checkWhoIsWinning();
+                    particleSpeed = 0.08;
+                }
+                else if (dis < 10) {
+                    frameRate = 60;
+                    bEffect = false;
                     bEndGame = true;
                     endCountDownStart = ofGetSeconds();
                     endCountDown = 3;
+                    if (bYellowWin && bDidYouEvenPlayingMan) yScore++;
+                    if (bRedWin && bDidYouEvenPlayingMan) rScore++;
+                   
                 }
             }
             if (bEndGame && bDidYouEvenPlayingMan) {
@@ -182,16 +206,59 @@ void testApp::update(){
 
 //--------------------------------------------------------------
 void testApp::draw(){
+    ofBackground(255);
     
+    ofPushMatrix();
+    float x=0;
+    float y=0;
+    if (bEffect) {
+        zoomPct+= zoomSpeed;
+        if (zoomPct > 1) {
+            zoomPct = 1;
+        }else{
+            x = (int)ofRandom(0,60);
+            y = (int)ofRandom(0,60);
+            ofBackground(int(ofRandom(0,70)));
+        }
+        
+        zoom = (1-zoomPct)*zoom + zoomPct*450;
+       
+        if (bYellowWin) {
+            particles[0].size-=10;
+            particles[0].faceNum = 1;
+        }else if(bRedWin){
+            particles[1].size-=10;
+            particles[1].faceNum = 1;
+        }
+        
+        if (particles[1].size < 0) {
+            particles[1].size = 0;
+        }
+        
+        if (particles[0].size < 0) {
+            particles[0].size = 0;
+        }
+        
+    }else{
+        zoom = 0;
+        zoomPct = 0;
+    }
+    ofTranslate(x, y,zoom);
+    camera();
+    ofPopMatrix();
+    
+}
+//--------------------------------------------------------------
+void testApp::camera(){
     switch (condition) {
-        //------------------
+            //------------------
         case MAIN_MENU:
         {
             ofBackground(255);
             for (int i = 0 ; i<MAIN_MENU_ITEMS; i++) {
                 if (i==1||i==2) ofSetColor(150,200);
                 else ofSetColor(0,200);
-
+                
                 ofCircle(menuDots[i], 50);
             }
             
@@ -235,24 +302,25 @@ void testApp::draw(){
                 
                 string sTagline = "\" \nThe touch,\nthe grab,\nthe stroke,\nall of those things\nwe\'re going to be obsessed about.\n\"\n                - Peter Molydeux\n\nTap to start";
                 font.drawString(sTagline,
-                                   245,
-                                   590);
+                                245,
+                                590);
                 
             }
         }
-        break;
-        //------------------
+            break;
+            //------------------
         case GAME_PLAY:
         {
             
-//            ofPushMatrix();
-//            ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
-//            float scale = ofMap(dis, 0, 1000, 2.0, 0.5);
-//            ofScale(scale, scale);
+            //            ofPushMatrix();
+            //            ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+            //            float scale = ofMap(dis, 0, 1000, 2.0, 0.5);
+            //            ofScale(scale, scale);
             
-            ofBackground(255);
+            
             ofSetColor(255,255);
-//            ofSetColor(red);
+            //          ofSetColor(red);
+            
             if (command_up == "rock") {
                 particles[0].particleStance = 1;
                 particles[0].draw();
@@ -267,7 +335,7 @@ void testApp::draw(){
                 particles[0].draw();
             }
             
-//            ofSetColor(yellow);
+            //            ofSetColor(yellow);
             if (command_down == "rock") {
                 
                 particles[1].particleStance = 1;
@@ -282,7 +350,9 @@ void testApp::draw(){
                 particles[1].draw();
             }
             
-//            ofPopMatrix();
+            
+            
+            //            ofPopMatrix();
             
             //menu
             ofPushStyle();
@@ -300,16 +370,16 @@ void testApp::draw(){
             ofSetColor(red);
             string sRScore = ofToString(rScore);
             fontBig.drawString(sRScore,
-                            50-(int)font.stringWidth(sRScore)/2,
-                            ofGetHeight()/2-25-(int)font.stringHeight(sRScore)/2);
+                               50-(int)font.stringWidth(sRScore)/2,
+                               ofGetHeight()/2-25-(int)font.stringHeight(sRScore)/2);
             
             
             ofSetColor(yellow);
             string sYScore = ofToString(yScore);
             fontBig.drawString(sYScore,
-                            50-(int)font.stringWidth(sYScore)/2,
-                            ofGetHeight()/2+80+(int)font.stringHeight(sYScore));
-
+                               50-(int)font.stringWidth(sYScore)/2,
+                               ofGetHeight()/2+80+(int)font.stringHeight(sYScore));
+            
             //pauseButton
             ofSetColor(80,100);
             ofSetRectMode(OF_RECTMODE_CENTER);
@@ -381,8 +451,8 @@ void testApp::draw(){
                 
             }
         }
-        break;
-        //------------------
+            break;
+            //------------------
         case CREDITS:
         {
             ofBackground(50);
@@ -392,12 +462,11 @@ void testApp::draw(){
             font.drawString("Part of MolyJam 2013 Game Jam\n\n\" \nThe touch,\nthe grab,\nthe stroke,\nall of those things\nwe\'re going to be obsessed about.\n\"\n                - Peter Molydeux", 245, menuDots[3].y);
             
         }
-        break;
-        //------------------
-
+            break;
+            //------------------
+            
     }
-    
-        
+
 }
 
 //--------------------------------------------------------------
@@ -432,7 +501,7 @@ void testApp::touchDown(ofTouchEventArgs & touch){
         //------------------
         case GAME_PLAY:
         {
-            if (!bPause && !bEndGame) {
+            if (!bPause && !bEndGame && !bEffect) {
                 if (rect_up.inside(touch.x, touch.y)) {
                     finger temp;
                     temp.ID = touch.id;
