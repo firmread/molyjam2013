@@ -76,9 +76,9 @@ void testApp::setup(){
     //*********sound**************************
     sound[0].loadSound("sound/gameStart.wav");
     sound[1].loadSound("sound/gameOver.wav");
-    sound[2].loadSound("sound/touch01.wav");
-    sound[3].loadSound("sound/touch02.wav");
-    sound[4].loadSound("sound/touch03.wav");
+    sound[2].loadSound("sound/touch04.wav");
+    sound[3].loadSound("sound/touch04.wav");
+    sound[4].loadSound("sound/touch04.wav");
     sound[5].loadSound("sound/drawGame.wav");
 
     sound[0].setMultiPlay(false);
