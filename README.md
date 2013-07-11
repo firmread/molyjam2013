@@ -4,6 +4,8 @@ molyjam2013
 simple iPad game for MolyJam2013  
 http://www.molyjam.com/news  
   
+Developed in Openframeworks for iOS  
+  
 by   
 Paul Cheng  
 Firm Read Tothong  
