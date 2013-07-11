@@ -507,19 +507,19 @@ void testApp::camera(){
             }
             
             ofSetColor(0,200);
-            string descript1 = "Rock\nPinch two fingers";
+            string descript1 = "Rock\n\'the grab\'\nPinch two fingers";
             font.drawString(descript1,
-                            ofGetWidth()/2-(int)font.stringWidth(descript1)/2,
+                            300,
                             ofGetHeight()*(1)/4+(int)font.stringHeight(descript1)/2 +40);
             
-            string descript2 = "Paper\nSpread two fingers";
+            string descript2 = "Paper\n\'the stroke\'\nSpread two fingers";
             font.drawString(descript2,
-                            ofGetWidth()/2-(int)font.stringWidth(descript2)/2,
+                            300,
                             ofGetHeight()*(2)/4+(int)font.stringHeight(descript2)/2 +40);
             
-            string descript3 = "Scissors\nTap with two fingers";
+            string descript3 = "Scissors\n\'the touch\'\nTap with two fingers";
             font.drawString(descript3,
-                            ofGetWidth()/2-(int)font.stringWidth(descript3)/2,
+                            300,
                             ofGetHeight()*(3)/4+(int)font.stringHeight(descript3)/2 +40);
             
         }
@@ -578,49 +578,52 @@ void testApp::touchDown(ofTouchEventArgs & touch){
         //------------------
         case GAME_PLAY:
         {
-            if (!bPause && !bEndGame && !bEffect) {
-                if (rect_up.inside(touch.x, touch.y)) {
-                    finger temp;
-                    temp.ID = touch.id;
-                    temp.district = 0;
-                    temp.pos.set(touch.x, touch.y);
-                    temp.prePos.set(touch.x, touch.y);
-                    mfinger_up.push_back(temp);
+            if (!bEffect) {
+                
+                if (!bPause && !bEndGame) {
+                    if (rect_up.inside(touch.x, touch.y)) {
+                        finger temp;
+                        temp.ID = touch.id;
+                        temp.district = 0;
+                        temp.pos.set(touch.x, touch.y);
+                        temp.prePos.set(touch.x, touch.y);
+                        mfinger_up.push_back(temp);
+                    }
+                    
+                    if (rect_down.inside(touch.x, touch.y)) {
+                        finger temp;
+                        temp.ID = touch.id;
+                        temp.district = 0;
+                        temp.pos.set(touch.x, touch.y);
+                        temp.prePos.set(touch.x, touch.y);
+                        mfinger_down.push_back(temp);
+                    }
+                    
+                    
                 }
                 
-                if (rect_down.inside(touch.x, touch.y)) {
-                    finger temp;
-                    temp.ID = touch.id;
-                    temp.district = 0;
-                    temp.pos.set(touch.x, touch.y);
-                    temp.prePos.set(touch.x, touch.y);
-                    mfinger_down.push_back(temp);
+                if (menuButton[1].distance(touchPoint)<menuButtonSize) {
+                    bPause = true;
                 }
                 
-
-            }
-            
-            if (menuButton[1].distance(touchPoint)<menuButtonSize) {
-                bPause = true;
-            }
-            
-            if (bPause == true){
-                if (pauseMenu[0].distance(touchPoint)<50) {
-                    bPause = false;
+                if (bPause == true){
+                    if (pauseMenu[0].distance(touchPoint)<50) {
+                        bPause = false;
+                    }
+                    else if (pauseMenu[1].distance(touchPoint)<50) {
+                        condition = MAIN_MENU;
+                        resetScore();
+                    }
                 }
-                else if (pauseMenu[1].distance(touchPoint)<50) {
-                    condition = MAIN_MENU;
-                    resetScore();
-                }
-            }
-            
-            if (bEndGame == true) {
-                if (endGameMenu[0].distance(touchPoint) < 50) {
-                    reset();
-                }
-                if (endGameMenu[2].distance(touchPoint) < 50) {
-                    condition = MAIN_MENU;
-                    resetScore();
+                
+                if (bEndGame == true) {
+                    if (endGameMenu[0].distance(touchPoint) < 50) {
+                        reset();
+                    }
+                    if (endGameMenu[2].distance(touchPoint) < 50) {
+                        condition = MAIN_MENU;
+                        resetScore();
+                    }
                 }
             }
         }
