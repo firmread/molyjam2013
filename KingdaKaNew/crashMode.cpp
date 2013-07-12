@@ -163,9 +163,9 @@ void crashMode::draw(){
 //-------------------------------------------------------
 void crashMode::gameEnd(){
     if (scoreNum1 == winScore) {
-        contentNum = 2;
+        situation = GAME_END_TOP_WIN;
     }else if (scoreNum2 == winScore){
-        contentNum = 3;
+        situation = GAME_END_BOT_WIN;
     }else{
         reset();
     }

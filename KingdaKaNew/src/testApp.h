@@ -37,8 +37,9 @@ class testApp : public ofxiPhoneApp{
     
         ofImage charTop[3];
         ofImage charBot[3];
-  
-
+    
+     
+    
 };
 
 

@@ -19,7 +19,6 @@ void testApp::setup(){
     charBot[2].loadImage("assets/images/gamePlay/yPaper.png");
     
     currentScene = 0;
-    
     //-+++++++--crash mode------++++++++++++-----------
     scenes[0] = new crashMode();
     scenes[0]->setup();
@@ -29,6 +28,7 @@ void testApp::setup(){
         ((crashMode*)scenes[0])->charTop[i] = &charTop[i];
         ((crashMode*)scenes[0])->charBot[i] = &charBot[i];
     }
+    
     
 }
 
@@ -50,8 +50,13 @@ void testApp::update(){
     reset();
     if (mMenu.condition == IN_GAME) {
         scenes[currentScene]->update();
-        if( ((crashMode*)scenes[0])->situation == GAME_END){
-            mMenu.condition = GAME_OVER;
+        
+        if( ((crashMode*)scenes[0])->situation == GAME_END_TOP_WIN){
+            mMenu.condition = GAME_END;
+            mMenu.whoIsWinner = 0;
+        }else if( ((crashMode*)scenes[0])->situation == GAME_END_BOT_WIN){
+            mMenu.condition = GAME_END;
+            mMenu.whoIsWinner = 1;
         }
     }
 }

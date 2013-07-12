@@ -16,13 +16,13 @@
 #define PAUSE_MENU_ITEMS 2
 #define END_MENU_ITEMS 3
 #define CRASH_MODE_MENU 3
-
+#define GAME_END_MENU 3
 enum menu_condition {
     MAIN_MENU,
     CRASH_MODE,
     IN_GAME,
     PAUSE_GAME,
-    GAME_OVER,
+    GAME_END,
     TUTORIAL,
     CREDITS,
 };
@@ -42,28 +42,36 @@ public:
     void setupCrashMenu();
     void setupPauseGame();
     void setupInGame();
-
+    void setupGameEnd();
     void draw();
     void touchDown(int x, int y);
     void touchMove(int x, int y);
     void touchUp(int x, int y);
     
     menu_condition condition;
-    
-    ofPoint menuDots[MAIN_MENU_ITEMS];
+    menu_start start;
     ofTrueTypeFont *font, *fontBig;
-    
-    ofPoint menuButton[2];
+
+    //++++++++Main menu buttons+++++++++++++++++++
     int menuButtonSize;
+    ofPoint menuDots[MAIN_MENU_ITEMS];
     
+    //++++++++In game buttons+++++++++++++++++++
+    ofPoint menuButton[2];
+   
+    //++++++++Pause menu buttons+++++++++++++++++++
     bool bPause;
+    float pauseMenuSize;
     ofPoint pauseMenu[PAUSE_MENU_ITEMS];
     
-    menu_start start;
+    //++++++++Crash Mode select menu+++++++++++++++++++
     int rouns;
-    //crash menu
     float crashMenuSize;
     ofPoint crashMenu[CRASH_MODE_MENU];
+    //++++++++Game end menu+++++++++++++++++++
+    float gameEndMenuSize;
+    ofPoint gameEndMenu[GAME_END_MENU];
+    int whoIsWinner;
 };
 
 #endif /* defined(__KingdaKaNew__menu__) */

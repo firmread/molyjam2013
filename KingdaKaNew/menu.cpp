@@ -16,10 +16,11 @@ void menu::setup(){
     setupPauseGame();
     setupInGame();
     setupCrashMenu();
+    setupGameEnd();
     rouns = 0;
-    
-   
+    whoIsWinner = -1;
 }
+
 //--------------------------------------------------------------------------------
 void menu::setupMainMenu(){
     for (int i =0; i<MAIN_MENU_ITEMS; i++) {
@@ -30,6 +31,7 @@ void menu::setupMainMenu(){
 
 //--------------------------------------------------------------------------------
 void menu::setupPauseGame(){
+    pauseMenuSize = 50;
     for (int i = 0 ; i<PAUSE_MENU_ITEMS; i++) {
         pauseMenu[i].set(ofGetWidth()/2, (i+1)*ofGetHeight()/(PAUSE_MENU_ITEMS+1));
     }
@@ -40,6 +42,14 @@ void menu::setupInGame(){
     menuButton[0].set(0, ofGetHeight()/2);
     menuButton[1].set(ofGetWidth(), ofGetHeight()/2);
     menuButtonSize = 150;
+}
+
+//--------------------------------------------------------------------------------
+void menu::setupGameEnd(){
+    gameEndMenuSize = 50;
+    for (int i = 0 ; i<GAME_END_MENU; i++) {
+        gameEndMenu[i].set(ofGetWidth()/2, (i+1)*ofGetHeight()/(GAME_END_MENU+1));
+    }
 }
 
 //--------------------------------------------------------------------------------
@@ -145,7 +155,7 @@ void menu::draw(){
 
             for (int i=0; i<CRASH_MODE_MENU; i++) {
                 ofSetColor(0,200);
-                ofCircle(pauseMenu[i], crashMenuSize);
+                ofCircle(pauseMenu[i], pauseMenuSize);
             }
 
             ofSetColor(255);
@@ -160,6 +170,36 @@ void menu::draw(){
                              pauseMenu[1].y+(int)font->stringHeight(sTwo)/2);
             
 
+        }break;
+            
+        case GAME_END:{
+            
+            if(whoIsWinner == 0){
+                ofSetColor(255,0,0);
+                ofRect(0, 0, ofGetWidth(), ofGetHeight());
+               
+            }else if(whoIsWinner == 1){
+                ofSetColor(251, 175, 24);
+                ofRect(0, 0, ofGetWidth(), ofGetHeight());
+               
+            }
+            
+            for (int i=0; i<GAME_END_MENU; i++) {
+                ofSetColor(0,200);
+                ofCircle(gameEndMenu[i], gameEndMenuSize);
+            }
+            
+            ofSetColor(255);
+            string sOne = "Play\nAgain";
+            font->drawString(sOne,
+                             gameEndMenu[0].x-(int)font->stringWidth(sOne)/2,
+                             gameEndMenu[0].y); // coz have two lines
+            
+            string sTwo = "Main\nMenu";
+            font->drawString(sTwo,
+                             gameEndMenu[2].x-(int)font->stringWidth(sTwo)/2,
+                             gameEndMenu[2].y);
+            
         }break;
     }
    
@@ -215,6 +255,14 @@ void menu::touchDown(int x, int y){
                 condition = MAIN_MENU;
             }
             
+        }break;
+            
+        case GAME_END:{
+            if (gameEndMenu[0].distance(touchPoint) < crashMenuSize) {
+                condition = CRASH_MODE;
+            }else if (gameEndMenu[2].distance(touchPoint) < crashMenuSize) {
+                condition = MAIN_MENU;
+            }
         }break;
     }
             

@@ -149,6 +149,18 @@
 			name = "core frameworks";
 			sourceTree = "<group>";
 		};
+		4CC84630178F75CD00237FE4 /* utilites */ = {
+			isa = PBXGroup;
+			children = (
+				4CC84628178E01EC00237FE4 /* finger.cpp */,
+				4CC84629178E01EC00237FE4 /* finger.h */,
+				4CC8462B178E066300237FE4 /* particle.cpp */,
+				4CC8462C178E066400237FE4 /* particle.h */,
+				4CC84624178DFFC500237FE4 /* baseSetup.h */,
+			);
+			name = utilites;
+			sourceTree = "<group>";
+		};
 		BB16E9930F2B1E5900518274 /* libs */ = {
 			isa = PBXGroup;
 			children = (
@@ -201,13 +213,9 @@
 				4CC8460D178DDC1A00237FE4 /* baseScene.h */,
 				4CC84625178E00B400237FE4 /* crashMode.cpp */,
 				4CC84626178E00B400237FE4 /* crashMode.h */,
-				4CC84628178E01EC00237FE4 /* finger.cpp */,
-				4CC84629178E01EC00237FE4 /* finger.h */,
 				4CC84621178DF80F00237FE4 /* menu.cpp */,
 				4CC84622178DF80F00237FE4 /* menu.h */,
-				4CC8462B178E066300237FE4 /* particle.cpp */,
-				4CC8462C178E066400237FE4 /* particle.h */,
-				4CC84624178DFFC500237FE4 /* baseSetup.h */,
+				4CC84630178F75CD00237FE4 /* utilites */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;

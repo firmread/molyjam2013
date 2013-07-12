@@ -22,7 +22,8 @@ enum winn_situation {
     TOP_WIN,
     BOT_WIN,
     DRAW_WIN,
-    GAME_END,
+    GAME_END_TOP_WIN,
+    GAME_END_BOT_WIN,
 };
 
 class crashMode: public baseScene{
