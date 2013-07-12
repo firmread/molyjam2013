@@ -162,12 +162,12 @@ void menu::draw(){
             string sOne = "Resume";
             font->drawString(sOne,
                              pauseMenu[0].x-(int)font->stringWidth(sOne)/2,
-                             pauseMenu[0].y+(int)font->stringHeight(sOne)/2); // coz have two lines
+                             pauseMenu[0].y+(int)font->stringHeight(sOne)/2);
             
-            string sTwo = "Main Menu";
+            string sTwo = "Main\nMenu";
             font->drawString(sTwo,
                              pauseMenu[1].x-(int)font->stringWidth(sTwo)/2,
-                             pauseMenu[1].y+(int)font->stringHeight(sTwo)/2);
+                             pauseMenu[1].y);
             
 
         }break;
@@ -185,7 +185,11 @@ void menu::draw(){
             }
             
             for (int i=0; i<GAME_END_MENU; i++) {
-                ofSetColor(0,200);
+                if (i == 1) {
+                    ofSetColor(0,50);
+                }else{
+                    ofSetColor(0,200);
+                }
                 ofCircle(gameEndMenu[i], gameEndMenuSize);
             }
             
@@ -193,7 +197,18 @@ void menu::draw(){
             string sOne = "Play\nAgain";
             font->drawString(sOne,
                              gameEndMenu[0].x-(int)font->stringWidth(sOne)/2,
-                             gameEndMenu[0].y); // coz have two lines
+                             gameEndMenu[0].y);
+            
+            ofSetColor(255);
+            string winner;
+            if (whoIsWinner == 0) {
+                winner = "Red win";
+            }else if(whoIsWinner == 1) {
+                winner = "Yellow win";
+            }
+            font->drawString(winner,
+                             gameEndMenu[1].x-(int)font->stringWidth(winner)/2,
+                             gameEndMenu[1].y+(int)font->stringHeight(winner)/2);
             
             string sTwo = "Main\nMenu";
             font->drawString(sTwo,
