@@ -111,12 +111,14 @@ void multithread::reset(){
     
     for (int i =0; i<amount; i++) {
         bCrash[i] = true;
-        bZoom[i] = false;
+        rSize[i].set(80,80);
+        ySize[i].set(80,80);
+        crashStep[i] = 0;
     }
     
     focus.set(0, 0, 0);
     bEffect = false;
-    crashStep = 0;
+    
 }
 
 //-------------------------------------------------------
@@ -136,16 +138,20 @@ void multithread::content(int num){
             ofTranslate(rPos[i].pos.x,rPos[i].pos.y);
             ofRotateZ(180);
             ofSetRectMode(OF_RECTMODE_CENTER);
-            rHand[rNum[i]]->draw(0,0,80,80);
+            rHand[rNum[i]]->draw(0,0,rSize[i].x,rSize[i].y);
             ofSetRectMode(OF_RECTMODE_CORNER);
             ofPopMatrix();
             
             ofPushMatrix();
             ofTranslate(yPos[i].pos.x,yPos[i].pos.y);
             ofSetRectMode(OF_RECTMODE_CENTER);
-            yHand[yNum[i]]->draw(0,0,80,80);
+            yHand[yNum[i]]->draw(0,0,ySize[i].x,ySize[i].y);
             ofSetRectMode(OF_RECTMODE_CORNER);
             ofPopMatrix();
+        }
+        
+        if (bCrashEffect) {
+            carshEffect();
         }
     }
 
@@ -155,9 +161,8 @@ void multithread::content(int num){
 void multithread::checkWhoIsWinning(){
     
     for (int i=0; i<amount; i++) {
-        if (rPos[i].pos.distance(yPos[i].pos)<40 && bCrash[i]) {
+        if (rPos[i].pos.distance(yPos[i].pos)<50 && bCrash[i]) {
             bCrash[i] = false;
-            bZoom[i] = true;
             bEffect = true;
             if (rNum[i]==0) {
                 
@@ -169,6 +174,7 @@ void multithread::checkWhoIsWinning(){
                     winStatus[i] = "draw";
                 }
             }else if (rNum[i]==1) {
+                
                 if (yNum[i]==0) {
                     winStatus[i] = "yellowWin";
                 }else if(yNum[i]==2){
@@ -178,6 +184,7 @@ void multithread::checkWhoIsWinning(){
                 }
                 
             }else if (rNum[i]==2) {
+                
                 if (yNum[i]==0) {
                     winStatus[i] = "redWin";
                 }else if(yNum[i]==1){
@@ -196,95 +203,164 @@ void multithread::checkWhoIsWinning(){
 //-------------------------------------------------------
 void multithread::crash(){
 
-    float speed = 0.1f;
-    if (!bCrash[0]&& bZoom[0]) {
-        
-        if (crashStep == 0 ) {
-            pct += speed;
-            if (pct>1) {
-                crashStep =1 ;
-                pct = 1;
-            }
-            
-            focus.x = pct*280;
-            focus.y = 0;
-            focus.z = pct*700;
-        }
-        
-        if (crashStep == 1) {
-            pct -= speed;
-            if (pct<0) {
-                crashStep = 0;
-                pct = 0;
-                bEffect = false;
-                bZoom[0] = false;
-            }
-            
-            focus.x = pct*280;
-            focus.y = 0;
-            focus.z = pct*700;
-        }
+    float speed = 0.12f;
+    
+    if (bEffect) {
+        focus.x = ofRandom(10);
+        focus.y = ofRandom(10);
+    }else{
+        focus.x = 0;
+        focus.y = 0;
     }
     
-    if (!bCrash[1] && bZoom[1]) {
-        
-        if (crashStep == 0) {
-            pct += speed;
-            if (pct>1) {
-                crashStep =1 ;
-                pct = 1;
-            }
-            
-            focus.x = 0;
-            focus.y = 0;
-            focus.z = pct*700;
-        }
-        
-        if (crashStep == 1) {
-            pct -= speed;
-            if (pct<0) {
-                crashStep = 0;
-                pct = 0;
-                bEffect = false;
-                bZoom[1] = false;
-            }
-            
-            focus.x = 0;
-            focus.y = 0;
-            focus.z = pct*700;
-        }
-    }
-        
-        if (!bCrash[2] && bZoom[2]) {
-            if (crashStep == 0) {
-                pct += speed;
-                if (pct>1) {
-                    crashStep =1 ;
-                    pct = 1;
+    for (int i =0; i<amount; i++) {
+        if (!bCrash[i]) {
+            if (winStatus[i] == "redWin") {
+                if (crashStep[i] == 0) {
+                    pct+=speed;
+                    if (pct>1) {
+                        pct =1;
+                        crashStep[i] = 1;
+                        carshEffectSetup(yPos[i].pos, 1);
+                        bCrashEffect = true;
+                    }
+                    rSize[i].x = pct*120;
+                    rSize[i].y = pct*120;
+                    ySize[i].x = pct*120;
+                    ySize[i].y = pct*120;
+                    
+                }else if(crashStep[i] == 1){
+                    
+                    pct-=speed;
+                    if (pct<0) {
+                        pct =0;
+                        crashStep[i] = 2;
+                    }
+                    
+                    ySize[i].x = pct*120;
+                    ySize[i].y = pct*120;
                 }
-                
-                focus.x = -pct*280;
-                focus.y = 0;
-                focus.z = pct*700;
+               
             }
-            
-            if (crashStep == 1) {
-                pct -= speed;
-                if (pct<0) {
-                    crashStep = 0;
-                    pct = 0;
-                    bEffect = false;
-                    bZoom[2] = false;
+            else if(winStatus[i] == "yellowWin"){
+                if (crashStep[i] == 0) {
+                    pct+=speed;
+                    if (pct>1) {
+                        pct =1;
+                        crashStep[i] = 1;
+                        carshEffectSetup(rPos[i].pos, 0);
+                        bCrashEffect = true;
+                    }
+                    rSize[i].x = pct*120;
+                    rSize[i].y = pct*120;
+                    ySize[i].x = pct*120;
+                    ySize[i].y = pct*120;
+                    
+                }else if(crashStep[i] == 1){
+                    
+                    pct-=speed;
+                    if (pct<0) {
+                        pct =0;
+                        crashStep[i] = 2;
+                    }
+                    
+                    rSize[i].x = pct*120;
+                    rSize[i].y = pct*120;
                 }
-                
-                focus.x = -pct*280;
-                focus.y = 0;
-                focus.z = pct*700;
+            }else if(winStatus[i] == "draw"){
+                if (crashStep[i] == 0) {
+                    pct+=speed;
+                    if (pct>1) {
+                        pct =1;
+                        crashStep[i] = 1;
+                    }
+                    rSize[i].x = pct*120;
+                    rSize[i].y = pct*120;
+                    ySize[i].x = pct*120;
+                    ySize[i].y = pct*120;
+                    
+                }else if(crashStep[i] == 1){
+                    
+                    pct-=speed;
+                    if (pct<0) {
+                        pct =0;
+                        bEffect = false;
+                        crashStep[i] = 2;
+                    }
+                    
+                    rSize[i].x = pct*120;
+                    rSize[i].y = pct*120;
+                    ySize[i].x = pct*120;
+                    ySize[i].y = pct*120;
+
+                }
             }
+        }
     }
     
 }
 
+//-------------------------------------------------------
+void multithread::carshEffectSetup(ofPoint pos, int num){
+    
+    for (int i=0; i<30; i++) {
+        smallShape shape;
+        shape.pct = 0;
+        shape.org.set(pos);
+        shape.pos.set(pos);
+        
+        float radius = ofRandom(200);
+        float angle = ofRandom(360);
+        float x = pos.x + radius * cos(angle*DEG_TO_RAD);
+        float y = pos.y + radius * -sin(angle*DEG_TO_RAD);
+        shape.toPos.set(x, y);
+        
+        if (num == 0) shape.color.set(255, 0, 0);
+        else if(num == 1) shape.color.set(251, 175, 24);
+
+        shape.bFinish = false;
+        
+        smallShapes.push_back(shape);
+    }
+    
+}
+
+//-------------------------------------------------------
+void multithread::carshEffect(){
+    
+    
+    for (int i=0; i<30; i++) {
+        float speed = 0.1f;
+        smallShapes[i].pct +=speed;
+        if (smallShapes[i].pct>1) {
+            smallShapes[i].pct=1;
+            smallShapes[i].bFinish  = true;
+        }
+        smallShapes[i].pos = (1-pct)*smallShapes[i].org + pct*smallShapes[i].toPos;
+        
+        ofSetColor(smallShapes[i].color);
+        ofNoFill();
+        ofCircle(smallShapes[i].pos, 10);
+        ofCircle(smallShapes[i].pos, 5);
+        ofFill();
+    }
+    
+    int counter =0;
+    for (int i=0; i<30; i++) {
+        if (smallShapes[i].bFinish  == true) {
+            counter ++;
+        }
+    }
+    
+    if (counter == 30) {
+        bCrashEffect = false;
+        bEffect = false;
+        smallShapes.clear();
+    }
+    
+    
+}
+    
 //-------------------------------------------------------
 void multithread::determineGesture(){
     for (int i=0; i<amount; i++) {

@@ -13,6 +13,17 @@
 #include "baseScene.h"
 #include "particle.h"
 #include "finger.h"
+class smallShape{
+public:
+
+    ofPoint org;
+    ofPoint pos;
+    ofPoint toPos;
+    ofColor color;
+    float pct;
+    bool bFinish;
+};
+
 
 class multithread : public baseScene{
     
@@ -26,6 +37,8 @@ public:
     void checkWhoIsWinning();
     void determineGesture();
     void crash();
+    void carshEffectSetup(ofPoint pos, int num);
+    void carshEffect();
     void reset();
     
     void chooseScore();
@@ -62,9 +75,11 @@ public:
     float pct;
     bool bCrash[3];
     bool bEffect;
-    int crashStep;
-    bool bZoom[3];
-    
+    int crashStep[3];
+    bool bCrashEffect;
+    ofPoint rSize[3];
+    ofPoint ySize[3];
+    vector<smallShape> smallShapes;
     //control
     vector<finger> rfinger_0;
     vector<finger> rfinger_1;
