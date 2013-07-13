@@ -17,6 +17,7 @@ void menu::setup(){
     setupInGame();
     setupCrashMenu();
     setupGameEnd();
+    setupMultithreadMenu();
     rouns = 0;
     whoIsWinner = -1;
 }
@@ -59,7 +60,14 @@ void menu::setupCrashMenu(){
         crashMenu[i].set(ofGetWidth()/2, (i+1)*ofGetHeight()/(CRASH_MODE_MENU+1));
     }
 }
+//--------------------------------------------------------------------------------
+void menu::setupMultithreadMenu(){
 
+    MultithreadMenuSize = 50;
+    for (int i= 0; i<MULTITHREAD_MODE_MENU; i++) {
+        MultithreadMenu[i].set(ofGetWidth()/2, (i+1)*ofGetHeight()/(MULTITHREAD_MODE_MENU+1));
+    }
+}
 //--------------------------------------------------------------------------------
 void menu::draw(){
     
@@ -68,7 +76,7 @@ void menu::draw(){
         case MAIN_MENU:{
             ofBackground(255);
             for (int i = 0 ; i<MAIN_MENU_ITEMS; i++) {
-                if (i==1||i==2) ofSetColor(150,200);
+                if (i==2) ofSetColor(150,200);
                 else ofSetColor(0,200);
                 
                 ofCircle(menuDots[i], 50);
@@ -80,10 +88,10 @@ void menu::draw(){
                                 menuDots[0].x-(int)font->stringWidth(sOne)/2,
                                 menuDots[0].y); // coz have two lines
             
-            string sTwo = "Mode 2";
+            string sTwo = "Multi-\nthread";
             font->drawString(sTwo,
                                 menuDots[1].x-(int)font->stringWidth(sTwo)/2,
-                                menuDots[1].y+(int)font->stringHeight(sTwo)/2);
+                                menuDots[1].y);
             
             string sThree = "Mode 3";
             font->drawString(sThree,
@@ -129,6 +137,34 @@ void menu::draw(){
 
             
         }break;
+            
+        case MULTITHREAD_MODE:{
+            
+            for (int i=0; i<MULTITHREAD_MODE_MENU; i++) {
+                ofSetColor(0,200);
+                ofCircle(MultithreadMenu[i], MultithreadMenuSize);
+            }
+            
+            ofSetColor(255);
+            string sOne = "3";
+            font->drawString(sOne,
+                             MultithreadMenu[0].x-(int)font->stringWidth(sOne)/2,
+                             MultithreadMenu[0].y+(int)font->stringHeight(sOne)/2);
+            
+            string sTwo = "5";
+            font->drawString(sTwo,
+                             MultithreadMenu[1].x-(int)font->stringWidth(sTwo)/2,
+                             MultithreadMenu[1].y+(int)font->stringHeight(sTwo)/2);
+            
+            string sThree = "10";
+            font->drawString(sThree,
+                             MultithreadMenu[2].x-(int)font->stringWidth(sThree)/2,
+                             MultithreadMenu[2].y+(int)font->stringHeight(sThree)/2);
+            
+            
+            
+        }break;
+
             
         case IN_GAME:{
            
@@ -230,13 +266,15 @@ void menu::touchDown(int x, int y){
             
             if (menuDots[0].distance(touchPoint) < 50) {
                 condition = CRASH_MODE;
+            }else if (menuDots[1].distance(touchPoint) < 50) {
+                condition = MULTITHREAD_MODE;
             }
+            
         }break;
             
         case CRASH_MODE:{
             
             if (ofDist(crashMenu[0].x, crashMenu[0].y, x, y)<crashMenuSize) {
-            
                 condition = IN_GAME;
                 start = START_CRASH_MODE;
                 rouns = 3;
@@ -257,6 +295,30 @@ void menu::touchDown(int x, int y){
             
         }break;
 
+            
+        case MULTITHREAD_MODE:{
+            
+            if (ofDist(crashMenu[0].x, crashMenu[0].y, x, y)<crashMenuSize) {
+                condition = IN_GAME;
+                start = START_MULITHREAD_MODE;
+                rouns = 3;
+                
+            }else if(ofDist(crashMenu[1].x, crashMenu[1].y, x, y)<crashMenuSize){
+                
+                condition = IN_GAME;
+                start = START_MULITHREAD_MODE;
+                rouns = 5;
+                
+            }else if(ofDist(crashMenu[2].x, crashMenu[2].y, x, y)<crashMenuSize){
+                
+                condition = IN_GAME;
+                start = START_MULITHREAD_MODE;
+                rouns = 10;
+            }
+            
+        }break;
+            
+            
         case IN_GAME:{
             if (menuButton[1].distance(touchPoint) < menuButtonSize) {
                 condition = PAUSE_GAME;

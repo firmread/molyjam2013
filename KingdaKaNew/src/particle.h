@@ -4,6 +4,18 @@
 #include "ofMain.h"
 
 
+// C style 80s :)
+
+typedef struct{
+	int			count;
+	ofVec2f		sum;
+	float		distance;
+	float		strength;
+} flockingForce;
+ 
+
+// C++ style 90s :)
+/*
 class flockingForce {
 	public:
 	
@@ -13,6 +25,8 @@ class flockingForce {
 	float		strength;
 	
 };
+*/
+
 
 
 class particle{
@@ -52,8 +66,7 @@ class particle{
 		void bounceOffWalls();
 	
 		float damping;
-    
-    
+
     protected:
     private:
 };

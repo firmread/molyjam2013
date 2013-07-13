@@ -13,7 +13,8 @@
 		4CC84623178DF80F00237FE4 /* menu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4CC84621178DF80F00237FE4 /* menu.cpp */; };
 		4CC84627178E00B400237FE4 /* crashMode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4CC84625178E00B400237FE4 /* crashMode.cpp */; };
 		4CC8462A178E01EC00237FE4 /* finger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4CC84628178E01EC00237FE4 /* finger.cpp */; };
-		4CC8462D178E066400237FE4 /* particle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4CC8462B178E066300237FE4 /* particle.cpp */; };
+		4CC8463417904DB000237FE4 /* multithread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4CC8463217904DB000237FE4 /* multithread.cpp */; };
+		4CC8463A1790ACB900237FE4 /* particle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4CC846381790ACB900237FE4 /* particle.cpp */; };
 		5326AEA810A23A0500278DE6 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5326AEA710A23A0500278DE6 /* CoreLocation.framework */; };
 		53F323EB10A20EDB00E0DAE4 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53F323EA10A20EDB00E0DAE4 /* OpenAL.framework */; };
 		BB16EBD20F2B2A9500518274 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB16EBD10F2B2A9500518274 /* OpenGLES.framework */; };
@@ -63,8 +64,10 @@
 		4CC84626178E00B400237FE4 /* crashMode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = crashMode.h; path = ../crashMode.h; sourceTree = "<group>"; };
 		4CC84628178E01EC00237FE4 /* finger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = finger.cpp; sourceTree = "<group>"; };
 		4CC84629178E01EC00237FE4 /* finger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = finger.h; sourceTree = "<group>"; };
-		4CC8462B178E066300237FE4 /* particle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = particle.cpp; sourceTree = "<group>"; };
-		4CC8462C178E066400237FE4 /* particle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = particle.h; sourceTree = "<group>"; };
+		4CC8463217904DB000237FE4 /* multithread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = multithread.cpp; sourceTree = "<group>"; };
+		4CC8463317904DB000237FE4 /* multithread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = multithread.h; sourceTree = "<group>"; };
+		4CC846381790ACB900237FE4 /* particle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = particle.cpp; sourceTree = "<group>"; };
+		4CC846391790ACB900237FE4 /* particle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = particle.h; sourceTree = "<group>"; };
 		5326AEA710A23A0500278DE6 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		53F323EA10A20EDB00E0DAE4 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		BB16EBD10F2B2A9500518274 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -152,10 +155,10 @@
 		4CC84630178F75CD00237FE4 /* utilites */ = {
 			isa = PBXGroup;
 			children = (
+				4CC846381790ACB900237FE4 /* particle.cpp */,
+				4CC846391790ACB900237FE4 /* particle.h */,
 				4CC84628178E01EC00237FE4 /* finger.cpp */,
 				4CC84629178E01EC00237FE4 /* finger.h */,
-				4CC8462B178E066300237FE4 /* particle.cpp */,
-				4CC8462C178E066400237FE4 /* particle.h */,
 				4CC84624178DFFC500237FE4 /* baseSetup.h */,
 			);
 			name = utilites;
@@ -213,6 +216,8 @@
 				4CC8460D178DDC1A00237FE4 /* baseScene.h */,
 				4CC84625178E00B400237FE4 /* crashMode.cpp */,
 				4CC84626178E00B400237FE4 /* crashMode.h */,
+				4CC8463217904DB000237FE4 /* multithread.cpp */,
+				4CC8463317904DB000237FE4 /* multithread.h */,
 				4CC84621178DF80F00237FE4 /* menu.cpp */,
 				4CC84622178DF80F00237FE4 /* menu.h */,
 				4CC84630178F75CD00237FE4 /* utilites */,
@@ -321,7 +326,8 @@
 				4CC84623178DF80F00237FE4 /* menu.cpp in Sources */,
 				4CC84627178E00B400237FE4 /* crashMode.cpp in Sources */,
 				4CC8462A178E01EC00237FE4 /* finger.cpp in Sources */,
-				4CC8462D178E066400237FE4 /* particle.cpp in Sources */,
+				4CC8463417904DB000237FE4 /* multithread.cpp in Sources */,
+				4CC8463A1790ACB900237FE4 /* particle.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

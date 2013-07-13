@@ -21,12 +21,18 @@ void testApp::setup(){
     currentScene = 0;
     //-+++++++--crash mode------++++++++++++-----------
     scenes[0] = new crashMode();
+    scenes[1] = new multithread();
+    
     scenes[0]->setup();
+    scenes[1]->setup();
+    
     ((crashMode*)scenes[0])->font = &font;
     ((crashMode*)scenes[0])->fontBig = &fontBig;
     for (int i = 0; i<3; i++) {
         ((crashMode*)scenes[0])->charTop[i] = &charTop[i];
         ((crashMode*)scenes[0])->charBot[i] = &charBot[i];
+        ((multithread*)scenes[1])->rHand[i] = &charTop[i];
+        ((multithread*)scenes[1])->yHand[i] = &charBot[i];
     }
     
     
@@ -42,12 +48,19 @@ void testApp::reset(){
         ((crashMode*)scenes[0])->scoreSetup(mMenu.rouns);
         mMenu.start = START_EMPTY;
     }
+    
+    if (mMenu.start == START_MULITHREAD_MODE) {
+        currentScene = 1;
+        ((multithread*)scenes[1])->reset();
+        mMenu.start = START_EMPTY;
+    }
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
     
     reset();
+    
     if (mMenu.condition == IN_GAME) {
         scenes[currentScene]->update();
         

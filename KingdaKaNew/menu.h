@@ -16,10 +16,12 @@
 #define PAUSE_MENU_ITEMS 2
 #define END_MENU_ITEMS 3
 #define CRASH_MODE_MENU 3
+#define MULTITHREAD_MODE_MENU 3
 #define GAME_END_MENU 3
 enum menu_condition {
     MAIN_MENU,
     CRASH_MODE,
+    MULTITHREAD_MODE,
     IN_GAME,
     PAUSE_GAME,
     GAME_END,
@@ -27,9 +29,11 @@ enum menu_condition {
     CREDITS,
 };
 
+
 enum menu_start {
     START_EMPTY,
     START_CRASH_MODE,
+    START_MULITHREAD_MODE,
     START_TUTORIAL,
     START_CREDITS,
 };
@@ -41,6 +45,7 @@ public:
     void setupMainMenu();
     void setupCrashMenu();
     void setupPauseGame();
+    void setupMultithreadMenu();
     void setupInGame();
     void setupGameEnd();
     void draw();
@@ -68,6 +73,11 @@ public:
     int rouns;
     float crashMenuSize;
     ofPoint crashMenu[CRASH_MODE_MENU];
+    
+    //++++++++Multithread Mode select menu+++++++++++++++++++
+    float MultithreadMenuSize;
+    ofPoint MultithreadMenu[MULTITHREAD_MODE_MENU];
+
     //++++++++Game end menu+++++++++++++++++++
     float gameEndMenuSize;
     ofPoint gameEndMenu[GAME_END_MENU];

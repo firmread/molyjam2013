@@ -4,15 +4,15 @@
 //------------------------------------------------------------
 particle::particle(){
 	setInitialCondition(0,0,0,0);
-	damping	= 0.10f;
+	damping	= 0.08f;
 	
 	seperation.distance		= 20;
 	alignment.distance		= 80;
 	cohesion.distance		= 40;
 	
-	seperation.strength		= .0;
-    alignment.strength		= .0;
-	cohesion.strength		= .0;
+	seperation.strength		= .03;
+    alignment.strength		= .015;
+	cohesion.strength		= .015;
 	
 }
 
@@ -337,8 +337,6 @@ void particle::draw(){
 	velPerp.y = velNormal.x;
 	
 	ofLine(pos.x, pos.y, pos.x + velNormal.x*10, pos.y + velNormal.y*10);
-    
-    
 	   
 }
 

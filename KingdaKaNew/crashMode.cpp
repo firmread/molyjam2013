@@ -95,7 +95,7 @@ void crashMode::reset(){
     situation = EMPTY_WIN;
     contentNum = 0;
     
-    particleSpeed = ofRandom(0.2,0.8);
+    particleSpeed = ofRandom(0.12,0.8);
     
     particles[0].setInitialCondition(ofGetWidth()/2, 0, 0, 5);
     particles[1].setInitialCondition(ofGetWidth()/2, ofGetHeight(), 0, -5);
@@ -130,7 +130,7 @@ void crashMode::update(){
             determineGesture();
             
             for (int i =0; i<2; i++) {
-                particles[i].resetForce();
+                particles[i].resetForce(); 
             }
             
             particles[0].addAttractionForce(particles[1], 1024, particleSpeed);

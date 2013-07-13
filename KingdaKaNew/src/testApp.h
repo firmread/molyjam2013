@@ -7,6 +7,7 @@
 #include "baseSetup.h"
 #include "menu.h"
 #include "crashMode.h"
+#include "multithread.h"
 
 class testApp : public ofxiPhoneApp{
 	
