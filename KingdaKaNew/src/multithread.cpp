@@ -37,8 +37,8 @@ void multithread::update(){
             
             rPos[i].resetForce();
             yPos[i].resetForce();
-            rPos[i].addForce(0, 0.1);
-            yPos[i].addForce(0, -0.1);
+            rPos[i].addForce(0, 0.03);
+            yPos[i].addForce(0, -0.03);
         }
         
         for (int i = 0; i<amount; i++) {
@@ -66,6 +66,75 @@ void multithread::update(){
 };
 
 //-------------------------------------------------------
+void multithread::scoreSetup(int num){
+    winScore = num;
+    for (int i =0 ; i< winScore; i++) {
+        ofRectangle temp;
+        temp.set(30, 30+i*40, 10, 10);
+        rScore.push_back(temp);
+        temp.set(30, 1024-30-i*40, 10, 10);
+        yScore.push_back(temp);
+        
+        bool bTemp = false;
+        bRedScore.push_back(bTemp);
+        bYellowScore.push_back(bTemp);
+    }
+}
+
+//-------------------------------------------------------
+void multithread::scoreReset(){
+    rScoreNum = yScoreNum = 0;
+    rScore.clear();
+    yScore.clear();
+    bRedScore.clear();
+    bYellowScore.clear();
+    
+}
+
+//-------------------------------------------------------
+void multithread::score(){
+    
+    for (int i =0; i<rScoreNum; i++) {
+        bRedScore[i] = true;
+    }
+    
+    for (int i =0 ; i< rScore.size(); i++) {
+        ofSetRectMode(OF_RECTMODE_CENTER);
+        ofSetColor(127);
+        ofRect(rScore[i].position,12,12);
+        bRedScore[i]?  ofSetColor(30, 30, 30): ofSetColor(200, 200, 200);
+        ofRect(rScore[i]);
+        ofSetRectMode(OF_RECTMODE_CORNER);
+    }
+    
+    for (int i =0; i<yScoreNum; i++) {
+        bYellowScore[i] = true;
+    }
+    
+    for (int i =0 ; i< yScore.size(); i++) {
+        ofSetRectMode(OF_RECTMODE_CENTER);
+        ofSetColor(127);
+        ofRect(yScore[i].position,12,12);
+        bYellowScore[i]?  ofSetColor(30, 30, 30): ofSetColor(200, 200, 200);
+        ofRect(yScore[i]);
+        ofSetRectMode(OF_RECTMODE_CORNER);
+    }
+    
+    ofSetColor(255,0,0);
+    string scoreTop = ofToString(rScoreNum);
+    ofPushMatrix();
+    ofTranslate(50, ofGetHeight()/2-100);
+    ofRotate(180, 0, 0, 1);
+    fontBig->drawString(scoreTop,-(int)fontBig->stringWidth(scoreTop)/2,-(int)fontBig->stringHeight(scoreTop)/2);
+    ofPopMatrix();
+    
+    
+    ofSetColor(251, 175, 24);
+    string scoreBot = ofToString(yScoreNum);
+    fontBig->drawString(scoreBot,50-(int)fontBig->stringWidth(scoreBot)/2,ofGetHeight()/2+50+(int)fontBig->stringHeight(scoreTop)/2);
+}
+
+//-------------------------------------------------------
 void multithread::draw(){
   
     ofPushMatrix();
@@ -73,6 +142,7 @@ void multithread::draw(){
     content(0);
     ofPopMatrix();
     
+    score();
 };
 
 //-------------------------------------------------------
@@ -109,16 +179,21 @@ void multithread::reset(){
         winStatus[i] = "noWinner";
     }
     
+    
+    
     for (int i =0; i<amount; i++) {
         bCrash[i] = true;
-        rSize[i].set(80,80);
-        ySize[i].set(80,80);
+        rSize[i].set(120,120);
+        ySize[i].set(120,120);
         crashStep[i] = 0;
     }
     
     focus.set(0, 0, 0);
     bEffect = false;
-    
+    rCounter = 0;
+    yCounter = 0;
+    timer = 0;
+    whichWin = -1;
 }
 
 //-------------------------------------------------------
@@ -160,6 +235,8 @@ void multithread::content(int num){
 //-------------------------------------------------------
 void multithread::checkWhoIsWinning(){
     
+   
+    
     for (int i=0; i<amount; i++) {
         if (rPos[i].pos.distance(yPos[i].pos)<50 && bCrash[i]) {
             bCrash[i] = false;
@@ -168,8 +245,10 @@ void multithread::checkWhoIsWinning(){
                 
                 if(yNum[i]==1){
                     winStatus[i] = "redWin";
+                    rCounter ++;
                 }else if(yNum[i]==2){
                     winStatus[i] = "yellowWin";
+                    yCounter ++;
                 }else{
                     winStatus[i] = "draw";
                 }
@@ -177,8 +256,10 @@ void multithread::checkWhoIsWinning(){
                 
                 if (yNum[i]==0) {
                     winStatus[i] = "yellowWin";
+                    yCounter ++;
                 }else if(yNum[i]==2){
                     winStatus[i] = "redWin";
+                    rCounter ++;
                 }else{
                     winStatus[i] = "draw";
                 }
@@ -187,8 +268,10 @@ void multithread::checkWhoIsWinning(){
                 
                 if (yNum[i]==0) {
                     winStatus[i] = "redWin";
+                    rCounter ++;
                 }else if(yNum[i]==1){
                     winStatus[i] = "yellowWin";
+                    yCounter ++;
                 }else{
                     winStatus[i] = "draw";
                 }
@@ -197,7 +280,34 @@ void multithread::checkWhoIsWinning(){
         }
     }
     
+    if (!bCrash[0] && !bCrash[1] && !bCrash[2] && !bEffect) {
+        if (rCounter > yCounter) {
+            timer ++;
+            if (timer>100) {
+                rScoreNum ++;
+                reset();
+            }
+        }else if (rCounter < yCounter) {
+            timer ++;
+            if (timer>100) {
+                yScoreNum ++;
+                reset();
+            }
+        }else{
+            timer ++;
+            if (timer>100) {
+                reset();
+            }
+        }
+        
+        
+    }
 
+    if (rScoreNum == winScore) {
+        whichWin = 0;
+    }else if(yScoreNum == winScore){
+        whichWin = 1;
+    }
 }
 
 //-------------------------------------------------------
@@ -224,10 +334,10 @@ void multithread::crash(){
                         carshEffectSetup(yPos[i].pos, 1);
                         bCrashEffect = true;
                     }
-                    rSize[i].x = pct*120;
-                    rSize[i].y = pct*120;
-                    ySize[i].x = pct*120;
-                    ySize[i].y = pct*120;
+                    rSize[i].x = pct*150;
+                    rSize[i].y = pct*150;
+                    ySize[i].x = pct*150;
+                    ySize[i].y = pct*150;
                     
                 }else if(crashStep[i] == 1){
                     
@@ -237,8 +347,8 @@ void multithread::crash(){
                         crashStep[i] = 2;
                     }
                     
-                    ySize[i].x = pct*120;
-                    ySize[i].y = pct*120;
+                    ySize[i].x = pct*150;
+                    ySize[i].y = pct*150;
                 }
                
             }
@@ -251,10 +361,10 @@ void multithread::crash(){
                         carshEffectSetup(rPos[i].pos, 0);
                         bCrashEffect = true;
                     }
-                    rSize[i].x = pct*120;
-                    rSize[i].y = pct*120;
-                    ySize[i].x = pct*120;
-                    ySize[i].y = pct*120;
+                    rSize[i].x = pct*150;
+                    rSize[i].y = pct*150;
+                    ySize[i].x = pct*150;
+                    ySize[i].y = pct*150;
                     
                 }else if(crashStep[i] == 1){
                     
@@ -264,8 +374,8 @@ void multithread::crash(){
                         crashStep[i] = 2;
                     }
                     
-                    rSize[i].x = pct*120;
-                    rSize[i].y = pct*120;
+                    rSize[i].x = pct*150;
+                    rSize[i].y = pct*150;
                 }
             }else if(winStatus[i] == "draw"){
                 if (crashStep[i] == 0) {
@@ -274,10 +384,10 @@ void multithread::crash(){
                         pct =1;
                         crashStep[i] = 1;
                     }
-                    rSize[i].x = pct*120;
-                    rSize[i].y = pct*120;
-                    ySize[i].x = pct*120;
-                    ySize[i].y = pct*120;
+                    rSize[i].x = pct*150;
+                    rSize[i].y = pct*150;
+                    ySize[i].x = pct*150;
+                    ySize[i].y = pct*150;
                     
                 }else if(crashStep[i] == 1){
                     
@@ -288,10 +398,10 @@ void multithread::crash(){
                         crashStep[i] = 2;
                     }
                     
-                    rSize[i].x = pct*120;
-                    rSize[i].y = pct*120;
-                    ySize[i].x = pct*120;
-                    ySize[i].y = pct*120;
+                    rSize[i].x = pct*150;
+                    rSize[i].y = pct*150;
+                    ySize[i].x = pct*150;
+                    ySize[i].y = pct*150;
 
                 }
             }

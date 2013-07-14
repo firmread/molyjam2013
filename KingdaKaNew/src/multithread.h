@@ -89,6 +89,20 @@ public:
     vector<finger> yfinger_2;
     string rCommand[3];
     string yCommand[3];
+    
+    //score
+    vector<ofRectangle>rScore;
+    vector<ofRectangle>yScore;
+    vector<bool>bRedScore;
+    vector<bool>bYellowScore;
+    int winScore;
+    int rScoreNum;
+    int yScoreNum;
+    int rCounter;
+    int yCounter;
+    ofTrueTypeFont *font, *fontBig;
+    int timer;
+    int whichWin;
 };
 
 #endif /* defined(__KingdaKaNew__multithread__) */

@@ -28,6 +28,9 @@ void testApp::setup(){
     
     ((crashMode*)scenes[0])->font = &font;
     ((crashMode*)scenes[0])->fontBig = &fontBig;
+    ((multithread*)scenes[1])->font = &font;
+    ((multithread*)scenes[1])->fontBig = &fontBig;
+
     for (int i = 0; i<3; i++) {
         ((crashMode*)scenes[0])->charTop[i] = &charTop[i];
         ((crashMode*)scenes[0])->charBot[i] = &charBot[i];
@@ -52,6 +55,8 @@ void testApp::reset(){
     if (mMenu.start == START_MULITHREAD_MODE) {
         currentScene = 1;
         ((multithread*)scenes[1])->reset();
+        ((multithread*)scenes[1])->scoreReset();
+        ((multithread*)scenes[1])->scoreSetup(mMenu.rouns);
         mMenu.start = START_EMPTY;
     }
 }
@@ -71,6 +76,19 @@ void testApp::update(){
             mMenu.condition = GAME_END;
             mMenu.whoIsWinner = 1;
         }
+        
+        if( ((multithread*)scenes[1])->whichWin == 0){
+            mMenu.condition = GAME_END;
+            mMenu.whoIsWinner = 0;
+        }else if( ((multithread*)scenes[1])->whichWin == 1){
+            mMenu.condition = GAME_END;
+            mMenu.whoIsWinner = 1;
+        }
+        
+        
+    }else if(mMenu.condition == MAIN_MENU){
+        ((crashMode*)scenes[0])->situation = EMPTY_WIN;
+        
     }
 }
 

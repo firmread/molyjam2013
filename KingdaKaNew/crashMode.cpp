@@ -7,7 +7,7 @@
 //
 
 #include "crashMode.h"
-
+//-------------------------------------------------------
 void crashMode::setup(){
     
     
@@ -18,6 +18,7 @@ void crashMode::setup(){
     
    
 }
+
 //-------------------------------------------------------
 void crashMode::scoreReset(){
     scoreNum1 = scoreNum2 = 0;
@@ -74,8 +75,6 @@ void crashMode::score(){
     
     ofSetColor(255,0,0);
     string scoreTop = ofToString(scoreNum1);
-   
-  
     
     ofPushMatrix();
     ofTranslate(50, ofGetHeight()/2-100);
@@ -90,6 +89,7 @@ void crashMode::score(){
                         50-(int)fontBig->stringWidth(scoreBot)/2,
                         ofGetHeight()/2+50+(int)fontBig->stringHeight(scoreTop)/2);
 }
+
 //-------------------------------------------------------
 void crashMode::reset(){
     situation = EMPTY_WIN;
@@ -160,6 +160,7 @@ void crashMode::draw(){
     content(contentNum);
     score();
 }
+
 //-------------------------------------------------------
 void crashMode::gameEnd(){
     if (scoreNum1 == winScore) {
